@@ -7,14 +7,6 @@ import javax.swing.JFrame;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.*;
 
-//******************************************************************************
-
-/**
- * The <CODE>Application</CODE> class.<P>
- *
- * @author  Chris Weaver
- * @version %I%, %G%
- */
 public final class Application
 {
 	//**********************************************************************
@@ -58,4 +50,3 @@ public final class Application
 	}
 }
 
-//******************************************************************************

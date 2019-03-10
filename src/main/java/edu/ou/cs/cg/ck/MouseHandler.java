@@ -5,14 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import edu.ou.cs.cg.utilities.Utilities;
 
-//******************************************************************************
-
-/**
- * The <CODE>MouseHandler</CODE> class.<P>
- *
- * @author  Chris Weaver
- * @version %I%, %G%
- */
 public final class MouseHandler extends MouseAdapter
 {
 	//**********************************************************************
@@ -92,4 +84,3 @@ public final class MouseHandler extends MouseAdapter
 	}
 }
 
-//******************************************************************************

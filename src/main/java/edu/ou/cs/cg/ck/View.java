@@ -1,19 +1,3 @@
-//******************************************************************************
-// Copyright (C) 2016-2019 University of Oklahoma Board of Trustees.
-//******************************************************************************
-// Last modified: Wed Feb 27 17:34:13 2019 by Chris Weaver
-//******************************************************************************
-// Major Modification History:
-//
-// 20160209 [weaver]:	Original file.
-// 20190203 [weaver]:	Updated to JOGL 2.3.2 and cleaned up.
-// 20190227 [weaver]:	Updated to use model and asynchronous event handling.
-//
-//******************************************************************************
-// Notes:
-//
-//******************************************************************************
-
 package edu.ou.cs.cg.ck;
 
 //import java.lang.*;
@@ -37,14 +21,7 @@ import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.lang.Math;
 
-//******************************************************************************
 
-/**
- * The <CODE>View</CODE> class.<P>
- *
- * @author  Chris Weaver
- * @version %I%, %G%
- */
 public final class View
 	implements GLEventListener
 {
@@ -159,7 +136,6 @@ public final class View
 	private void	update(GLAutoDrawable drawable)
 	{
 		k++;									// Advance animation counter
-		model.setK(k);
 	}
 
 	private void	render(GLAutoDrawable drawable)
@@ -214,4 +190,3 @@ public final class View
 
 }
 
-//******************************************************************************

@@ -1,18 +1,3 @@
-//******************************************************************************
-// Copyright (C) 2016 University of Oklahoma Board of Trustees.
-//******************************************************************************
-// Last modified: Tue Feb 26 15:40:03 2019 by Chris Weaver
-//******************************************************************************
-// Major Modification History:
-//
-// 20160225 [weaver]:	Original file.
-// 20190226 [weaver]:	Moved to utilities package, added coordinate mappings.
-//
-//******************************************************************************
-// Notes:
-//
-//******************************************************************************
-
 package edu.ou.cs.cg.utilities;
 
 //import java.lang.*;
@@ -21,14 +6,6 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 
-//******************************************************************************
-
-/**
- * The <CODE>EventUtilities</CODE> class.<P>
- *
- * @author  Chris Weaver
- * @version %I%, %G%
- */
 public final class Utilities
 {
 	//**********************************************************************
@@ -124,4 +101,3 @@ public final class Utilities
 	}
 }
 
-//******************************************************************************
