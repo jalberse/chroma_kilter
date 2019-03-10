@@ -1,0 +1,185 @@
+//******************************************************************************
+// Copyright (C) 2016 University of Oklahoma Board of Trustees.
+//******************************************************************************
+// Last modified: Fri Feb  1 18:35:55 2019 by Chris Weaver
+//******************************************************************************
+// Major Modification History:
+//
+// 20160209 [weaver]:	Original file.
+//
+//******************************************************************************
+
+plugins
+{
+    // https://docs.gradle.org/current/userguide/java_plugin.html
+    id 'java'
+
+    // https://docs.gradle.org/current/userguide/application_plugin.html
+    id 'application'
+
+    // https://docs.gradle.org/current/userguide/eclipse_plugin.html
+    id 'eclipse'
+
+    // https://plugins.gradle.org/plugin/com.github.johnrengelman.plugin-shadow
+    // https://github.com/johnrengelman/shadow
+    // version works for Gradle 4+ and Java 7+
+    id "com.github.johnrengelman.shadow" version "4.0.3"
+}
+
+//******************************************************************************
+
+group = "ou.cs.cg"
+version = '1.0.0'
+
+def appClassName = "edu.ou.cs.cg.example.Base"
+
+def altJvmArgs = ['-Xms256m', '-Xmx768m', '-noclassgc',\
+    '-Dfile.encoding=utf-8', '-Dapple.laf.useScreenMenuBar=false',\
+    '-Dapple.awt.showGrowBox=true', '-Dapple.awt.brushMetalLook=false',\
+    '-Dapple.awt.antialiasing=on', '-Dapple.awt.graphics.UseQuartz=true']
+
+//******************************************************************************
+// Plugin Configuration (java)
+//******************************************************************************
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+sourceSets
+{
+    main
+    {
+        resources
+        {
+            srcDir 'src/main/java'
+            //include ".*.rsrc"
+            exclude "**/.DS_Store", "**/*.java.*"
+        }
+    }
+}
+
+jar
+{
+    manifest
+    {
+        attributes\
+            'Implementation-Title': 'ou-cs-cg',\
+            'Implementation-Version': version,\
+            'Main-Class': appClassName
+
+            manifest.attributes provider: 'tribe7.net'
+            manifest.attributes permissions: 'all-permissions'
+            manifest.attributes codebase: '*'
+    }
+}
+
+javadoc
+{
+    maxMemory '256m'
+}
+
+tasks.withType(JavaCompile)
+{
+    // Run the compiler as a separate process for performance
+    options.fork = true
+
+    // docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
+    // Uncomment out one the following to choose lint warnings to show
+    options.compilerArgs << "-Xlint:all"
+    options.compilerArgs << "-Xlint:-serial"
+    //options.compilerArgs << "-Xlint:none"
+}
+
+//******************************************************************************
+// Plugin Configuration (application)
+//******************************************************************************
+
+applicationName = "base"
+
+mainClassName = appClassName
+
+applicationDefaultJvmArgs = altJvmArgs
+
+//******************************************************************************
+// Plugin Configuration (eclipse)
+//******************************************************************************
+
+//eclipse.classpath.downloadJavadoc = true
+
+//******************************************************************************
+// Plugin Configuration (shadow)
+//******************************************************************************
+// See https://imperceptiblethoughts.com/shadow/introduction/
+
+shadowJar
+{
+    baseName = applicationName + "-app"
+}
+
+//******************************************************************************
+// Dependencies
+//******************************************************************************
+
+repositories
+{
+    mavenCentral()
+}
+
+// DO NOT ADD OR CHANGE DEPENDENCIES WITHOUT EXPLICIT INSTRUCTOR PERMISSION!!!
+dependencies
+{
+    // Apache Commons CSV (commons.apache.org)
+    //implementation ('org.apache.commons:commons-csv:1.6')
+
+    // Apache Commons IO (commons.apache.org)
+    //implementation ('commons-io:commons-io:2.6')
+
+    // Apache Commons Lang (commons.apache.org/)
+    //implementation ('org.apache.commons:commons-lang3:3.8.1')
+
+    // JOGL (jogamp.org)
+    compile ('org.jogamp.jogl:jogl-all-main:2.3.2') { transitive = true }
+    compile ('org.jogamp.gluegen:gluegen-rt-main:2.3.2') { transitive = true }
+}
+
+//******************************************************************************
+// Helper Code for Alternative Start Scripts
+//******************************************************************************
+
+// Creates a script for an additional execution entry points (main() method)
+// Must apply 'application' plugin to be able to call this method.
+// Adapted from http://stackoverflow.com/questions/18421857/
+// See also http://stackoverflow.com/questions/21241767/
+def createScript(project, jvmOpts, name, mainClass)
+{
+    project.tasks.create(name: name, type: CreateStartScripts)
+    {
+        applicationName = name
+        mainClassName   = mainClass
+        defaultJvmOpts  = jvmOpts
+        outputDir       = new File(project.buildDir, 'scripts')
+        classpath       = project.tasks[JavaPlugin.JAR_TASK_NAME].outputs.files + project.configurations.runtime
+    }
+
+    project.tasks[name].dependsOn(project.jar)
+
+    project.applicationDistribution.with
+    {
+        into("bin")
+        {
+            from(project.tasks[name])
+            fileMode = 0755
+        }
+    }
+}
+
+//******************************************************************************
+// Alternative Start Scripts
+//******************************************************************************
+
+// The line below creates additional scripts to run the main() of some other
+// class. Put the desired script name in the third argument and the fully
+// qualified classname of the desired main() class in the fourth argument.
+createScript(project, altJvmArgs, 'chroma_kilter', 'edu.ou.cs.cg.ck.Application')
+
+//******************************************************************************
