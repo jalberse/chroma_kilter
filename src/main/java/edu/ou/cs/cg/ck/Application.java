@@ -14,7 +14,7 @@ public final class Application
 	//**********************************************************************
 
 	public static final String		DEFAULT_NAME = "Chroma Kilter";
-	public static final Dimension	DEFAULT_SIZE = new Dimension(1280, 720);
+	public static final Dimension	DEFAULT_SIZE = new Dimension(600, 600);
 
 	//**********************************************************************
 	// Main

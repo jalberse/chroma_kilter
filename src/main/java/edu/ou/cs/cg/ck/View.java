@@ -30,8 +30,8 @@ public final class View
 	//**********************************************************************
 
 	private static final int			DEFAULT_FRAMES_PER_SECOND = 60;
-	private static final DecimalFormat	FORMAT = new DecimalFormat("0.000");
 	public static final Random	RANDOM = new Random();
+	private GLU glu = new GLU();
 
 	//**********************************************************************
 	// Private Members
@@ -42,8 +42,6 @@ public final class View
 	private int						w;			// Canvas width
 	private int						h;			// Canvas height
 
-	private TextRenderer				renderer;
-
 	private final FPSAnimator			animator;
 	private int						k;	// Frame counter
 
@@ -51,6 +49,8 @@ public final class View
 
 	private final KeyHandler			keyHandler;
 	private final MouseHandler			mouseHandler;
+
+	private float rquad = 0.0f; // rotation
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -94,99 +94,131 @@ public final class View
 	{
 		return h;
 	}
-
-	//**********************************************************************
-	// Override Methods (GLEventListener)
-	//**********************************************************************
-
-	public void	init(GLAutoDrawable drawable)
-	{
-		w = drawable.getSurfaceWidth();
-		h = drawable.getSurfaceHeight();
-
-		renderer = new TextRenderer(new Font("Monospaced", Font.PLAIN, 18),
-									true, true);
-
-		initPipeline(drawable);
+	
+	
+	private void update(GLAutoDrawable drawable){
+		k++; // increment frame ctr
 	}
 
-	public void	dispose(GLAutoDrawable drawable)
-	{
-		renderer = null;
-	}
+	// *************************
+	// Override methods (GLEventListener)
+	// *************************
 
-	public void	display(GLAutoDrawable drawable)
-	{
-		updatePipeline(drawable);
+	@Override
+	public void display( GLAutoDrawable drawable ) {
 
+		// Update the pipeline here (clear buffer etc)
+		final GL2 gl = drawable.getGL().getGL2();
+	   	gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
+	   	gl.glLoadIdentity();
+	   	gl.glTranslatef( 0f, 0f, -5.0f ); // translates back 5 units
+ 
 		update(drawable);
-		render(drawable);
+
+		// Rotate The Cube On X, Y & Z
+		// TODO: let user turn rotation on/off with key
+	   	gl.glRotatef(rquad, 1.0f, 1.0f, 1.0f); 
+		
+		// Draw the form
+		// TODO: Switch case for different forms, specified by model
+		drawCube(gl);
+
+	   	gl.glFlush();
+		
+		// TODO: Store rotation speed in model, change with keys
+	   	rquad -= 0.15f;
+	}
+	
+	@Override
+	public void dispose( GLAutoDrawable drawable ) {
+	}
+	
+	@Override
+	public void init( GLAutoDrawable drawable ) {
+		// Called when OpenGL context is initialized
+
+		// Initialize pipeline
+	    final GL2 gl = drawable.getGL().getGL2();
+	    gl.glShadeModel( GL2.GL_SMOOTH );
+	    gl.glClearColor( 0f, 0f, 0f, 0f );
+	    gl.glClearDepth( 1.0f );
+	    gl.glEnable( GL2.GL_DEPTH_TEST );
+	    gl.glDepthFunc( GL2.GL_LEQUAL );
+	    gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );
+	}
+	   
+	@Override
+	public void reshape( GLAutoDrawable drawable, int x, int y, int width, int height ) {
+		// Handles when window is resized.
+		// Keeps perspective consistent etc
+		
+		final GL2 gl = drawable.getGL().getGL2();
+	    if( height < 0 )
+		   height = 1;
+			 
+	    final float h = ( float ) width / ( float ) height;
+	    gl.glViewport( 0, 0, width, height );
+	    gl.glMatrixMode( GL2.GL_PROJECTION );
+	    gl.glLoadIdentity();
+		 
+	    glu.gluPerspective( 45.0f, h, 1.0, 20.0 );
+	    gl.glMatrixMode( GL2.GL_MODELVIEW );
+	    gl.glLoadIdentity();
 	}
 
-	public void	reshape(GLAutoDrawable drawable, int x, int y, int w, int h)
+	// ***********************************
+	// Display helper methods
+	// ***********************************
+
+	private void drawCube(GL2 gl){
+		//giving different colors to different sides
+		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube
+		gl.glColor3f(1f,0f,0f); //red color
+		gl.glVertex3f(1.0f, 1.0f, -1.0f); // Top Right Of The Quad (Top)
+		gl.glVertex3f( -1.0f, 1.0f, -1.0f); // Top Left Of The Quad (Top)
+		gl.glVertex3f( -1.0f, 1.0f, 1.0f ); // Bottom Left Of The Quad (Top)
+		gl.glVertex3f( 1.0f, 1.0f, 1.0f ); // Bottom Right Of The Quad (Top)
+
+		gl.glColor3f( 0f,1f,0f ); //green color
+		gl.glVertex3f( 1.0f, -1.0f, 1.0f ); // Top Right Of The Quad
+		gl.glVertex3f( -1.0f, -1.0f, 1.0f ); // Top Left Of The Quad
+		gl.glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad
+		gl.glVertex3f( 1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad 
+
+		gl.glColor3f( 0f,0f,1f ); //blue color
+		gl.glVertex3f( 1.0f, 1.0f, 1.0f ); // Top Right Of The Quad (Front)
+		gl.glVertex3f( -1.0f, 1.0f, 1.0f ); // Top Left Of The Quad (Front)
+		gl.glVertex3f( -1.0f, -1.0f, 1.0f ); // Bottom Left Of The Quad
+		gl.glVertex3f( 1.0f, -1.0f, 1.0f ); // Bottom Right Of The Quad 
+
+		gl.glColor3f( 1f,1f,0f ); //yellow (red + green)
+		gl.glVertex3f( 1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad
+		gl.glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad
+		gl.glVertex3f( -1.0f, 1.0f, -1.0f ); // Top Right Of The Quad (Back)
+		gl.glVertex3f( 1.0f, 1.0f, -1.0f ); // Top Left Of The Quad (Back)
+
+		gl.glColor3f( 1f,0f,1f ); //purple (red + green)
+		gl.glVertex3f( -1.0f, 1.0f, 1.0f ); // Top Right Of The Quad (Left)
+		gl.glVertex3f( -1.0f, 1.0f, -1.0f ); // Top Left Of The Quad (Left)
+		gl.glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad
+		gl.glVertex3f( -1.0f, -1.0f, 1.0f ); // Bottom Right Of The Quad 
+
+		gl.glColor3f( 0f,1f, 1f ); //sky blue (blue +green)
+		gl.glVertex3f( 1.0f, 1.0f, -1.0f ); // Top Right Of The Quad (Right)
+		gl.glVertex3f( 1.0f, 1.0f, 1.0f ); // Top Left Of The Quad
+		gl.glVertex3f( 1.0f, -1.0f, 1.0f ); // Bottom Left Of The Quad
+		gl.glVertex3f( 1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad
+		gl.glEnd(); // Done Drawing The Quad
+	}
+
+	// ***********************************
+	// Define some geometric forms to draw
+	// ***********************************
+
+	private static final Point[] CUBE_GEOMETRY = new Point[]
 	{
-		this.w = w;
-		this.h = h;
-	}
-
-	//**********************************************************************
-	// Private Methods (Rendering)
-	//**********************************************************************
-
-	private void	update(GLAutoDrawable drawable)
-	{
-		k++;									// Advance animation counter
-	}
-
-	private void	render(GLAutoDrawable drawable)
-	{
-		GL2	gl = drawable.getGL().getGL2();
-
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT);		// Clear the buffer
-
-		// Draw methods go here
-
-		gl.glFlush();								// Finish and display
-	}
-
-	//**********************************************************************
-	// Private Methods (Pipeline)
-	//**********************************************************************
-
-	private void	initPipeline(GLAutoDrawable drawable)
-	{
-		GL2	gl = drawable.getGL().getGL2();
-
-		// Make the sky gradient easier by enabling alpha blending.
-		// Translucency in 3-D is more difficult and expensive than in 2-D!
-
-		// See com.jogamp.opengl.GL
-		gl.glEnable(GL2.GL_POINT_SMOOTH);	// Turn on point anti-aliasing
-		gl.glEnable(GL2.GL_LINE_SMOOTH);	// Turn on line anti-aliasing
-
-		gl.glEnable(GL.GL_BLEND);			// Turn on color channel blending
-		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-	private void	updatePipeline(GLAutoDrawable drawable)
-	{
-		GL2			gl = drawable.getGL().getGL2();
-		GLU			glu = GLU.createGLU();
-		Point2D.Double	origin = model.getOrigin();
-
-		float			xmin = (float)(origin.x - 1.0);
-		float			xmax = (float)(origin.x + 1.0);
-		float			ymin = (float)(origin.y - 1.0);
-		float			ymax = (float)(origin.y + 1.0);
-
-		gl.glMatrixMode(GL2.GL_PROJECTION);		// Prepare for matrix xform
-		gl.glLoadIdentity();						// Set to identity matrix
-		glu.gluOrtho2D(xmin, xmax, ymin, ymax);	// 2D translate and scale
-	}
-
-	//*************************//
-	// Private Methods (Scene) //
-	//*************************//
+		// TODO: Move the points in here rolling a custom 3d point class
+	};
 
 }
 
