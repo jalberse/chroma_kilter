@@ -55,6 +55,16 @@ public final class KeyHandler extends KeyAdapter
 			case KeyEvent.VK_O:
 				model.setRotationSpeed(model.getRotationSpeed() + .05f);
 				break;
+			case KeyEvent.VK_L:
+				if (model.getDistance() > -20.0f){
+					model.setDistance(model.getDistance() - .1f);
+				}
+				break;
+			case KeyEvent.VK_K:
+				if (model.getDistance() < -5.0f){
+					model.setDistance(model.getDistance() + .1f);
+				}
+				break;
 		}
 	}
 }

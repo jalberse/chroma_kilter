@@ -117,7 +117,7 @@ public final class View
 		final GL2 gl = drawable.getGL().getGL2();
 	   	gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
 	   	gl.glLoadIdentity();
-	   	gl.glTranslatef( 0f, 0f, -5.0f ); // translates back 5 units
+	   	gl.glTranslatef( 0f, 0f, model.getDistance()); // translates back 5 units
  
 		update(drawable);
 

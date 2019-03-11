@@ -22,6 +22,7 @@ public final class Model
 	private int k; // frame counter
 	private float rotationSpeed;
 	private boolean isRotating;
+	public float distance; // distance object is from camera
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -39,11 +40,16 @@ public final class Model
 
 		rotationSpeed = .15f;
 		isRotating = true;
+		distance = -5.0f;
 	}
 
 	//**********************************************************************
 	// Public Methods (Access Variables)
 	//**********************************************************************
+
+	public float getDistance(){
+		return distance;
+	}
 
 	public boolean isRotating(){
 		return isRotating;
@@ -73,6 +79,10 @@ public final class Model
 	//**********************************************************************
 	// Public Methods (Modify Variables)
 	//**********************************************************************
+
+	public void setDistance(float f){
+		distance = f;
+	}
 
 	public void setIsRotating(boolean x){
 		isRotating = x;
