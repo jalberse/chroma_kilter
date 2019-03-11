@@ -1,25 +1,28 @@
 package edu.ou.cs.cg.ck;
 
 //import java.lang.*;
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.text.DecimalFormat;
-import java.util.List;
+
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.*;
 import com.jogamp.opengl.util.FPSAnimator;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import edu.ou.cs.cg.utilities.Utilities;
-import java.awt.event.*;
-import java.awt.geom.*;
 import java.util.*;
+
+// will probably use...
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.text.DecimalFormat;
+import java.util.List;
 import javax.swing.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.lang.Math;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import edu.ou.cs.cg.utilities.Utilities;
+import java.awt.event.*;
+import java.awt.geom.*;
 
 
 public final class View
