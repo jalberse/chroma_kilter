@@ -1,6 +1,9 @@
 .gradle
 .settings
-build/install
+build
+bin
+
+
 # Compiled class file
 *.class
 

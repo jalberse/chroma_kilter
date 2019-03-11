@@ -52,8 +52,8 @@ public final class View
 
 	private final KeyHandler			keyHandler;
 	private final MouseHandler			mouseHandler;
-
-	private float rquad = 0.0f; // rotation
+	
+	private float r;
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -62,6 +62,8 @@ public final class View
 	public View(GLJPanel canvas)
 	{
 		this.canvas = canvas;
+
+		r = 0.0f;
 
 		// Initialize rendering
 		k = 0;
@@ -101,6 +103,7 @@ public final class View
 	
 	private void update(GLAutoDrawable drawable){
 		k++; // increment frame ctr
+		model.setK(k);
 	}
 
 	// *************************
@@ -120,22 +123,25 @@ public final class View
 
 		// Rotate The Cube On X, Y & Z
 		// TODO: let user turn rotation on/off with key
-	   	gl.glRotatef(rquad, 1.0f, 1.0f, 1.0f); 
+	   	gl.glRotatef(r, 1.0f, 1.0f, 1.0f); 
 		
 		// Draw the form
 		// TODO: Switch case for different geometry (cube,cone,pyramid,teapot...), specified by model/user
 
 		// TODO: Mess around for cool effects here
 		drawCube(gl,1.0f);
-		gl.glRotatef(rquad - .05f, 1.0f, 1.0f, 1.0f); 
+		gl.glRotatef(r - .05f, 1.0f, 1.0f, 1.0f); 
 		drawCube(gl,.3f);
-		gl.glRotatef(rquad + .05f, 1.0f, 1.0f, 1.0f); 
+		gl.glRotatef(r + .05f, 1.0f, 1.0f, 1.0f); 
 		drawCube(gl,.3f);
 
 	   	gl.glFlush();
 		
 		// TODO: Store rotation speed in model, change with keys
-	   	rquad -= 0.35f;
+		if (model.isRotating()){
+			r -= model.getRotationSpeed(); // change rotation angle iff spinning enabled
+		}
+		
 	}
 	
 	@Override

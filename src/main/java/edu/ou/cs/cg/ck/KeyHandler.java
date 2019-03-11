@@ -46,7 +46,15 @@ public final class KeyHandler extends KeyAdapter
 		double			a = (Utilities.isShiftDown(e) ? 0.01 : 0.1);
 		switch (e.getKeyCode())
 		{
-			
+			case KeyEvent.VK_P:
+				model.setIsRotating(!model.isRotating());
+				break;
+			case KeyEvent.VK_I:
+				model.setRotationSpeed(model.getRotationSpeed() - .05f);
+				break;
+			case KeyEvent.VK_O:
+				model.setRotationSpeed(model.getRotationSpeed() + .05f);
+				break;
 		}
 	}
 }

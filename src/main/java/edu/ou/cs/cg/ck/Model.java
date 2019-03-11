@@ -19,6 +19,9 @@ public final class Model
 	// Model variables
 	private Point2D.Double				origin;	// Current origin coords
 	private Point2D.Double				cursor;	// Current cursor coords
+	private int k; // frame counter
+	private float rotationSpeed;
+	private boolean isRotating;
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -31,11 +34,28 @@ public final class Model
 		// Initialize user-adjustable variables (with reasonable default values
 		origin = new Point2D.Double(0.0, 0.0);
 		cursor = null;
+
+		k = 0;
+
+		rotationSpeed = .15f;
+		isRotating = true;
 	}
 
 	//**********************************************************************
 	// Public Methods (Access Variables)
 	//**********************************************************************
+
+	public boolean isRotating(){
+		return isRotating;
+	}
+
+	public float getRotationSpeed(){
+		return rotationSpeed;
+	}
+
+	public int getK(){
+		return k;
+	}
 
 	public Point2D.Double	getOrigin()
 	{
@@ -54,13 +74,25 @@ public final class Model
 	// Public Methods (Modify Variables)
 	//**********************************************************************
 
+	public void setIsRotating(boolean x){
+		isRotating = x;
+	}
+
+	public void setRotationSpeed(float r){
+		rotationSpeed = r;
+	}
+
+	public void setK(int k){
+		this.k = k;
+	}
+
 	public void	setOriginInSceneCoordinates(Point2D.Double q)
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void	update(GL2 gl) {
 				origin = new Point2D.Double(q.x, q.y);
 			}
-		});;
+		});
 	}
 
 	public void	setOriginInViewCoordinates(Point q)
@@ -69,7 +101,7 @@ public final class Model
 			public void	update(double[] p) {
 				origin = new Point2D.Double(p[0], p[1]);
 			}
-		});;
+		});
 	}
 
 	public void	setCursorInViewCoordinates(Point q)
@@ -78,7 +110,7 @@ public final class Model
 			public void	update(double[] p) {
 				cursor = new Point2D.Double(p[0], p[1]);
 			}
-		});;
+		});
 	}
 
 	public void	turnCursorOff()
@@ -87,7 +119,7 @@ public final class Model
 			public void	update(GL2 gl) {
 				cursor = null;
 			}
-		});;
+		});
 	}
 
 	//**********************************************************************
