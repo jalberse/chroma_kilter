@@ -122,6 +122,7 @@ public final class View
 		// Draw the form
 		// TODO: Switch case for different forms, specified by model
 		drawCube(gl);
+		//gl.glTranslatef(0f,.1f,-5.0f); // offset
 
 	   	gl.glFlush();
 		
@@ -171,43 +172,22 @@ public final class View
 	// ***********************************
 
 	private void drawCube(GL2 gl){
-		//giving different colors to different sides
-		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube
-		gl.glColor3f(1f,0f,0f); //red color
-		gl.glVertex3f(1.0f, 1.0f, -1.0f); // Top Right Of The Quad (Top)
-		gl.glVertex3f( -1.0f, 1.0f, -1.0f); // Top Left Of The Quad (Top)
-		gl.glVertex3f( -1.0f, 1.0f, 1.0f ); // Bottom Left Of The Quad (Top)
-		gl.glVertex3f( 1.0f, 1.0f, 1.0f ); // Bottom Right Of The Quad (Top)
+		// NOTE: We may want to use tris?
 
-		gl.glColor3f( 0f,1f,0f ); //green color
-		gl.glVertex3f( 1.0f, -1.0f, 1.0f ); // Top Right Of The Quad
-		gl.glVertex3f( -1.0f, -1.0f, 1.0f ); // Top Left Of The Quad
-		gl.glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad
-		gl.glVertex3f( 1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad 
+		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube 
 
-		gl.glColor3f( 0f,0f,1f ); //blue color
-		gl.glVertex3f( 1.0f, 1.0f, 1.0f ); // Top Right Of The Quad (Front)
-		gl.glVertex3f( -1.0f, 1.0f, 1.0f ); // Top Left Of The Quad (Front)
-		gl.glVertex3f( -1.0f, -1.0f, 1.0f ); // Bottom Left Of The Quad
-		gl.glVertex3f( 1.0f, -1.0f, 1.0f ); // Bottom Right Of The Quad 
+		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
+			if (i == 0) gl.glColor3f( 1f,0f,0f ); // red color
+			if (i == 4) gl.glColor3f( 0f,1f,0f ); // green color
+			if (i == 8) gl.glColor3f( 0f,0f,1f ); // blue color
+			if (i == 12) gl.glColor3f( 1f,1f,0f ); // yellow
+			if (i == 16) gl.glColor3f( 1f,0f,1f ); // purple
+			if (i == 20) gl.glColor3f( 0f,1f,1f ); // sky blue
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX(),
+						  CUBE_GEOMETRY[i].getY(),
+						  CUBE_GEOMETRY[i].getZ());
+		}
 
-		gl.glColor3f( 1f,1f,0f ); //yellow (red + green)
-		gl.glVertex3f( 1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad
-		gl.glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad
-		gl.glVertex3f( -1.0f, 1.0f, -1.0f ); // Top Right Of The Quad (Back)
-		gl.glVertex3f( 1.0f, 1.0f, -1.0f ); // Top Left Of The Quad (Back)
-
-		gl.glColor3f( 1f,0f,1f ); //purple (red + green)
-		gl.glVertex3f( -1.0f, 1.0f, 1.0f ); // Top Right Of The Quad (Left)
-		gl.glVertex3f( -1.0f, 1.0f, -1.0f ); // Top Left Of The Quad (Left)
-		gl.glVertex3f( -1.0f, -1.0f, -1.0f ); // Bottom Left Of The Quad
-		gl.glVertex3f( -1.0f, -1.0f, 1.0f ); // Bottom Right Of The Quad 
-
-		gl.glColor3f( 0f,1f, 1f ); //sky blue (blue +green)
-		gl.glVertex3f( 1.0f, 1.0f, -1.0f ); // Top Right Of The Quad (Right)
-		gl.glVertex3f( 1.0f, 1.0f, 1.0f ); // Top Left Of The Quad
-		gl.glVertex3f( 1.0f, -1.0f, 1.0f ); // Bottom Left Of The Quad
-		gl.glVertex3f( 1.0f, -1.0f, -1.0f ); // Bottom Right Of The Quad
 		gl.glEnd(); // Done Drawing The Quad
 	}
 
@@ -215,9 +195,40 @@ public final class View
 	// Define some geometric forms to draw
 	// ***********************************
 
-	private static final Point[] CUBE_GEOMETRY = new Point[]
+	// Note: we define in this way so we may color each side independently by changing colors every 4 vertices
+	//		 rather than a more efficient 8 vertices (which would limit color choices without complicating code)
+	private static final Point3D[] CUBE_GEOMETRY = new Point3D[]
 	{
 		// TODO: Move the points in here rolling a custom 3d point class
+		new Point3D(1.0f,1.0f,-1.0f),
+		new Point3D(-1.0f, 1.0f, -1.0f),
+		new Point3D( -1.0f, 1.0f, 1.0f ),
+		new Point3D( 1.0f, 1.0f, 1.0f ),
+
+		new Point3D( 1.0f, -1.0f, 1.0f ),
+		new Point3D( -1.0f, -1.0f, 1.0f ),
+		new Point3D( -1.0f, -1.0f, -1.0f ),
+		new Point3D(1.0f, -1.0f, -1.0f ),
+
+		new Point3D( 1.0f, 1.0f, 1.0f ),
+		new Point3D( -1.0f, 1.0f, 1.0f ),
+		new Point3D( -1.0f, -1.0f, 1.0f),
+		new Point3D(1.0f, -1.0f, 1.0f),
+
+		new Point3D(1.0f, -1.0f, -1.0f),
+		new Point3D( -1.0f, -1.0f, -1.0f ),
+		new Point3D( -1.0f, 1.0f, -1.0f ),
+		new Point3D(1.0f, 1.0f, -1.0f ),
+
+		new Point3D( -1.0f, 1.0f, 1.0f ),
+		new Point3D( -1.0f, 1.0f, -1.0f ),
+		new Point3D( -1.0f, -1.0f, -1.0f ),
+		new Point3D( -1.0f, -1.0f, 1.0f ),
+
+		new Point3D( 1.0f, 1.0f, -1.0f ),
+		new Point3D( 1.0f, 1.0f, 1.0f),
+		new Point3D(1.0f, -1.0f, 1.0f ),
+		new Point3D( 1.0f, -1.0f, -1.0f ),
 	};
 
 }

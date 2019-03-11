@@ -2,9 +2,13 @@ package edu.ou.cs.cg.ck;
 
 public final class Point3D
 {
-    float x;
-    float y;
-    float z;
+    // TODO: If we use this for anything more than storing geometry
+    // e.g. dot products, distance, angles, equality... 
+    // we'll need to do more with it
+
+    private float x;
+    private float y;
+    private float z;
 
     public Point3D(float x, float y, float z){
         this.x = x;
