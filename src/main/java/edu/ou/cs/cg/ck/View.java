@@ -126,11 +126,10 @@ public final class View
 		// TODO: Switch case for different geometry (cube,cone,pyramid,teapot...), specified by model/user
 
 		// TODO: Mess around for cool effects here
-		// TODO: Transparency doesn't seem to be working? 
+		drawCube(gl,1.0f);
+		gl.glRotatef(rquad - .05f, 1.0f, 1.0f, 1.0f); 
 		drawCube(gl,.3f);
-		gl.glRotatef(rquad, 1.0f, .5f, 1.0f); 
-		drawCube(gl,.3f);
-		gl.glRotatef(rquad, .5f, 1.0f, 1.0f); 
+		gl.glRotatef(rquad + .05f, 1.0f, 1.0f, 1.0f); 
 		drawCube(gl,.3f);
 
 	   	gl.glFlush();
@@ -156,6 +155,9 @@ public final class View
 	    gl.glDepthFunc( GL2.GL_LEQUAL );
 		gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );
 
+		// enable transparency
+		gl.glEnable(GL2.GL_BLEND);
+		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	   
 	@Override
