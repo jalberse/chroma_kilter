@@ -120,14 +120,20 @@ public final class View
 	   	gl.glRotatef(rquad, 1.0f, 1.0f, 1.0f); 
 		
 		// Draw the form
-		// TODO: Switch case for different forms, specified by model
-		drawCube(gl);
-		//gl.glTranslatef(0f,.1f,-5.0f); // offset
+		// TODO: Switch case for different geometry (cube,cone,pyramid,teapot...), specified by model/user
+
+		// TODO: Mess around for cool effects here
+		// TODO: Transparency doesn't seem to be working? 
+		drawCube(gl,.3f);
+		gl.glRotatef(rquad, 1.0f, .5f, 1.0f); 
+		drawCube(gl,.3f);
+		gl.glRotatef(rquad, .5f, 1.0f, 1.0f); 
+		drawCube(gl,.3f);
 
 	   	gl.glFlush();
 		
 		// TODO: Store rotation speed in model, change with keys
-	   	rquad -= 0.15f;
+	   	rquad -= 0.35f;
 	}
 	
 	@Override
@@ -143,9 +149,10 @@ public final class View
 	    gl.glShadeModel( GL2.GL_SMOOTH );
 	    gl.glClearColor( 0f, 0f, 0f, 0f );
 	    gl.glClearDepth( 1.0f );
-	    gl.glEnable( GL2.GL_DEPTH_TEST );
+		gl.glEnable( GL2.GL_DEPTH_TEST );
 	    gl.glDepthFunc( GL2.GL_LEQUAL );
-	    gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );
+		gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );
+
 	}
 	   
 	@Override
@@ -171,18 +178,20 @@ public final class View
 	// Display helper methods
 	// ***********************************
 
-	private void drawCube(GL2 gl){
+	private void drawCube(GL2 gl, float alpha){
 		// NOTE: We may want to use tris?
 
 		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube 
 
 		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
-			if (i == 0) gl.glColor3f( 1f,0f,0f ); // red color
-			if (i == 4) gl.glColor3f( 0f,1f,0f ); // green color
-			if (i == 8) gl.glColor3f( 0f,0f,1f ); // blue color
-			if (i == 12) gl.glColor3f( 1f,1f,0f ); // yellow
-			if (i == 16) gl.glColor3f( 1f,0f,1f ); // purple
-			if (i == 20) gl.glColor3f( 0f,1f,1f ); // sky blue
+			// Specify color of each face
+			if (i == 0) gl.glColor4f( 1f,0f,0f,alpha ); // red color
+			if (i == 4) gl.glColor4f( 0f,1f,0f,alpha  ); // green color
+			if (i == 8) gl.glColor4f( 0f,0f,1f,alpha  ); // blue color
+			if (i == 12) gl.glColor4f( 1f,1f,0f,alpha  ); // yellow
+			if (i == 16) gl.glColor4f( 1f,0f,1f,alpha  ); // purple
+			if (i == 20) gl.glColor4f( 0f,1f,1f,alpha  ); // sky blue
+			// Draw the vertex
 			gl.glVertex3f(CUBE_GEOMETRY[i].getX(),
 						  CUBE_GEOMETRY[i].getY(),
 						  CUBE_GEOMETRY[i].getZ());
