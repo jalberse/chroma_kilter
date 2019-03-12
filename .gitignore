@@ -3,9 +3,9 @@
 build
 bin
 
-
 # Compiled class file
 *.class
+bin/main/edu/ou/cs/cg/ck/*.class
 
 # Log file
 *.log
