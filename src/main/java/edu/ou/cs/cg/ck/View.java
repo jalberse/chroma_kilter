@@ -129,11 +129,17 @@ public final class View
 		// TODO: Switch case for different geometry (cube,cone,pyramid,teapot...), specified by model/user
 
 		// TODO: Mess around for cool effects here
-		drawCube(gl,1.0f);
-		gl.glRotatef(r - .05f, 1.0f, 1.0f, 1.0f); 
-		drawCube(gl,.3f);
-		gl.glRotatef(r + .05f, 1.0f, 1.0f, 1.0f); 
-		drawCube(gl,.3f);
+		switch (model.getGeomID())
+		{
+			case 0:
+				drawCube(gl,1.0f);
+				break;
+			case 1:
+				drawSquarePyramid(gl, 1.0f);
+				break;
+		}
+
+		drawSquarePyramid(gl, 1.0f);
 
 	   	gl.glFlush();
 		
@@ -211,12 +217,27 @@ public final class View
 		gl.glEnd(); // Done Drawing The Quad
 	}
 
+	private void drawSquarePyramid(GL2 gl, float alpha){
+		gl.glBegin(GL2.GL_TRIANGLES);
+
+		for (int i = 0; i < PYRAMID_4.length; ++i){
+			if (i == 0) gl.glColor4f( 1f,0f,0f,alpha ); // red color
+			if (i == 3) gl.glColor4f( 0f,1f,0f,alpha  ); // green color
+			if (i == 6) gl.glColor4f( 0f,0f,1f,alpha  ); // blue color
+			if (i == 9) gl.glColor4f( 1f,1f,0f,alpha  ); // yellow
+			gl.glVertex3f(PYRAMID_4[i].getX(),
+						  PYRAMID_4[i].getY(),
+						  PYRAMID_4[i].getZ());
+		}
+
+		gl.glEnd();
+	}
+
 	// ***********************************
 	// Define some geometric forms to draw
 	// ***********************************
 
-	// Note: we define in this way so we may color each side independently by changing colors every 4 vertices
-	//		 rather than a more efficient 8 vertices (which would limit color choices without complicating code)
+	// Cube defined with quads
 	private static final Point3D[] CUBE_GEOMETRY = new Point3D[]
 	{
 		// TODO: Move the points in here rolling a custom 3d point class
@@ -249,6 +270,26 @@ public final class View
 		new Point3D( 1.0f, 1.0f, 1.0f),
 		new Point3D(1.0f, -1.0f, 1.0f ),
 		new Point3D( 1.0f, -1.0f, -1.0f ),
+	};
+
+	// A pyramid with 4 triangles and an open base
+	private static final Point3D[] PYRAMID_4 = new Point3D[]
+	{
+      new Point3D( 0.0f, 1.0f, 0.0f),
+      new Point3D(-1.0f, -1.0f, 1.0f),
+      new Point3D(1.0f, -1.0f, 1.0f),
+ 
+      new Point3D(0.0f, 1.0f, 0.0f),
+      new Point3D(1.0f, -1.0f, 1.0f),
+      new Point3D(1.0f, -1.0f, -1.0f),
+ 
+      new Point3D(0.0f, 1.0f, 0.0f),
+      new Point3D(1.0f, -1.0f, -1.0f),
+      new Point3D(-1.0f, -1.0f, -1.0f),
+ 
+      new Point3D( 0.0f, 1.0f, 0.0f),
+      new Point3D(-1.0f,-1.0f,-1.0f),
+      new Point3D(-1.0f,-1.0f, 1.0f),
 	};
 
 }

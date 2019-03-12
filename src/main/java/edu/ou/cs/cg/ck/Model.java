@@ -23,6 +23,10 @@ public final class Model
 	private float rotationSpeed;
 	private boolean isRotating;
 	public float distance; // distance object is from camera
+	int geomID; // the geometry we are rending
+		// 0 - cube
+		// 1 - square pyramid
+		// ... TODO add more
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -41,11 +45,17 @@ public final class Model
 		rotationSpeed = .15f;
 		isRotating = true;
 		distance = -5.0f;
+
+		geomID = 0;
 	}
 
 	//**********************************************************************
 	// Public Methods (Access Variables)
 	//**********************************************************************
+
+	public int getGeomID(){
+		return geomID;
+	}
 
 	public float getDistance(){
 		return distance;
@@ -79,6 +89,10 @@ public final class Model
 	//**********************************************************************
 	// Public Methods (Modify Variables)
 	//**********************************************************************
+
+	public void setGeomID(int x){
+		geomID = x;
+	}
 
 	public void setDistance(float f){
 		distance = f;

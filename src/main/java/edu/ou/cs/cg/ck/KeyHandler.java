@@ -46,15 +46,18 @@ public final class KeyHandler extends KeyAdapter
 		double			a = (Utilities.isShiftDown(e) ? 0.01 : 0.1);
 		switch (e.getKeyCode())
 		{
+			// pause rotation
 			case KeyEvent.VK_P:
 				model.setIsRotating(!model.isRotating());
 				break;
+			// Change rotation speed
 			case KeyEvent.VK_I:
 				model.setRotationSpeed(model.getRotationSpeed() - .05f);
 				break;
 			case KeyEvent.VK_O:
 				model.setRotationSpeed(model.getRotationSpeed() + .05f);
 				break;
+			// Increase/decrease distance of object
 			case KeyEvent.VK_L:
 				if (model.getDistance() > -20.0f){
 					model.setDistance(model.getDistance() - .1f);
@@ -64,6 +67,14 @@ public final class KeyHandler extends KeyAdapter
 				if (model.getDistance() < -5.0f){
 					model.setDistance(model.getDistance() + .1f);
 				}
+				break;
+			case KeyEvent.VK_NUMPAD0:
+			case KeyEvent.VK_0:
+				model.setGeomID(0);
+				break;
+			case KeyEvent.VK_NUMPAD1:
+			case KeyEvent.VK_1:
+				model.setGeomID(1);
 				break;
 		}
 	}
