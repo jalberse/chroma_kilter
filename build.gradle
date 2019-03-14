@@ -31,7 +31,7 @@ plugins
 group = "ou.cs.cg"
 version = '1.0.0'
 
-def appClassName = "edu.ou.cs.cg.example.Base"
+def appClassName = "edu.ou.cs.cg.ck.Application"
 
 def altJvmArgs = ['-Xms256m', '-Xmx768m', '-noclassgc',\
     '-Dfile.encoding=utf-8', '-Dapple.laf.useScreenMenuBar=false',\
