@@ -22,11 +22,12 @@ public final class Model
 	private int k; // frame counter
 	private float rotationSpeed;
 	private boolean isRotating;
-	public float distance; // distance object is from camera
-	int geomID; // the geometry we are rending
+	private float distance; // distance object is from camera
+	private int geomID; // the geometry we are rending
 		// 0 - cube
 		// 1 - square pyramid
 		// ... TODO add more
+	private float chromStrength; // the strength (translation) of chromatic abberation effect
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -45,6 +46,7 @@ public final class Model
 		rotationSpeed = .15f;
 		isRotating = true;
 		distance = -5.0f;
+		chromStrength = .1f;
 
 		geomID = 0;
 	}
@@ -52,6 +54,10 @@ public final class Model
 	//**********************************************************************
 	// Public Methods (Access Variables)
 	//**********************************************************************
+
+	public float getChromStrength(){
+		return chromStrength;
+	}
 
 	public int getGeomID(){
 		return geomID;
@@ -89,6 +95,10 @@ public final class Model
 	//**********************************************************************
 	// Public Methods (Modify Variables)
 	//**********************************************************************
+
+	public void setChromStrength(float x){
+		chromStrength = x;
+	}
 
 	public void setGeomID(int x){
 		geomID = x;
