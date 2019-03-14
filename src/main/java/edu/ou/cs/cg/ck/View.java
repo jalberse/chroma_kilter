@@ -214,6 +214,36 @@ public final class View
 						  CUBE_GEOMETRY[i].getZ());
 		}
 
+		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
+			// Specify color of each face
+			if (i == 0) gl.glColor4f( 1f,0f,0f,alpha ); // red color
+			if (i == 4) gl.glColor4f( 0f,1f,0f,alpha  ); // green color
+			if (i == 8) gl.glColor4f( 0f,0f,1f,alpha  ); // blue color
+			if (i == 12) gl.glColor4f( 1f,1f,0f,alpha  ); // yellow
+			if (i == 16) gl.glColor4f( 1f,0f,1f,alpha  ); // purple
+			if (i == 20) gl.glColor4f( 0f,1f,1f,alpha  ); // sky blue
+			// Draw the vertex
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX(),
+						  CUBE_GEOMETRY[i].getY(),
+						  CUBE_GEOMETRY[i].getZ());
+		}
+
+		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
+		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
+			// Draw the vertex
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX() - .1f,
+						  CUBE_GEOMETRY[i].getY() - .1f,
+						  CUBE_GEOMETRY[i].getZ() - .1f);
+		}
+		
+		gl.glColor4f( 1f,0f,0f,.3f); // red color
+		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
+			// Draw the vertex
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX() + .1f,
+						  CUBE_GEOMETRY[i].getY() + .1f,
+						  CUBE_GEOMETRY[i].getZ() + .1f);
+		}
+
 		gl.glEnd(); // Done Drawing The Quad
 	}
 
