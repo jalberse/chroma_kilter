@@ -170,6 +170,10 @@ public final class View
 	    gl.glDepthFunc( GL2.GL_LEQUAL );
 		gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );
 
+		// Disable rending backs of faces
+		gl.glCullFace(GL2.GL_BACK);
+		gl.glEnable(GL2.GL_CULL_FACE);
+
 		// enable transparency
 		gl.glEnable(GL2.GL_BLEND);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
