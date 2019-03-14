@@ -115,6 +115,11 @@ public final class View
 
 		// Update the pipeline here (clear buffer etc)
 		final GL2 gl = drawable.getGL().getGL2();
+
+		// set clear color (background color)
+		float[] tmpClearCol = model.getClearColor();
+		gl.glClearColor(tmpClearCol[0],tmpClearCol[1],tmpClearCol[2],0.0f);
+
 	   	gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
 	   	gl.glLoadIdentity();
 	   	gl.glTranslatef( 0f, 0f, model.getDistance()); // translates back 5 units
@@ -122,7 +127,7 @@ public final class View
 		update(drawable);
 
 		// Rotate The Cube On X, Y & Z
-		// TODO: let user turn rotation on/off with key
+		// TODO: Let user specify axis of rotation
 	   	gl.glRotatef(r, 1.0f, 1.0f, 1.0f); 
 		
 		// Draw the form

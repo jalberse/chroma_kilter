@@ -83,6 +83,13 @@ public final class KeyHandler extends KeyAdapter
 			case KeyEvent.VK_DOWN:
 				model.setChromStrength(model.getChromStrength() - .01f);
 				break;
+			// Set clear color (background color)
+			case KeyEvent.VK_LEFT:
+				model.setClearColorPrevious();
+				break;
+			case KeyEvent.VK_RIGHT:
+				model.setClearColorNext();
+				break;
 		}
 	}
 }

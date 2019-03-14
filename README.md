@@ -8,3 +8,4 @@
 | 0-9 | Change geometry |
 | up | increase strength of chromatic abberation |
 | down | decrease strength of chromatic abberation | 
+| left, right | toggle background color |

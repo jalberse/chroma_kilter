@@ -28,6 +28,8 @@ public final class Model
 		// 1 - square pyramid
 		// ... TODO add more
 	private float chromStrength; // the strength (translation) of chromatic abberation effect
+	private float[] clearColor; 
+	private int currClearColor = 0;
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -48,12 +50,19 @@ public final class Model
 		distance = -5.0f;
 		chromStrength = .1f;
 
+		clearColor = CLEAR_COLORS[0];
+
+
 		geomID = 0;
 	}
 
 	//**********************************************************************
 	// Public Methods (Access Variables)
 	//**********************************************************************
+
+	public float[] getClearColor(){
+		return clearColor;
+	}
 
 	public float getChromStrength(){
 		return chromStrength;
@@ -95,6 +104,26 @@ public final class Model
 	//**********************************************************************
 	// Public Methods (Modify Variables)
 	//**********************************************************************
+	
+	public void setClearColorPrevious(){
+		if (currClearColor > 0){
+			currClearColor--;
+			clearColor = CLEAR_COLORS[currClearColor];
+		}
+	}
+
+	public void setClearColorNext(){
+		if (currClearColor < CLEAR_COLORS.length - 1){
+			currClearColor++;
+			clearColor = CLEAR_COLORS[currClearColor];
+		}
+	}
+
+	public void setClearColor (float r, float g, float b){
+		clearColor[0] = r;
+		clearColor[1] = g;
+		clearColor[2] = b;
+	}
 
 	public void setChromStrength(float x){
 		chromStrength = x;
@@ -196,6 +225,15 @@ public final class Model
 
 		public abstract void	update(double[] p);
 	}
+
+	public static final float[][] CLEAR_COLORS = {
+		{0.0f,0.0f,0.0f}, // black
+		{1.0f,1.0f,1.0f},  // white
+		{0f,0f,1f}, // blue
+		{0f,1f,1f}, // yellow
+		{1f,0f,0f}, // red
+		{1f,1f,0f} // yellow
+	};
 }
 
 //******************************************************************************
