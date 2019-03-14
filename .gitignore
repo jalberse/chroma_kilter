@@ -24,3 +24,8 @@ bin/main/edu/ou/cs/cg/ck/*.class
 *.zip
 *.tar.gz
 *.rar
+
+# Jordan files
+*.un~
+*.DS_Store
+
