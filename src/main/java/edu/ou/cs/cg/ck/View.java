@@ -118,7 +118,7 @@ public final class View
 
 		// set clear color (background color)
 		float[] tmpClearCol = model.getClearColor();
-		gl.glClearColor(tmpClearCol[0],tmpClearCol[1],tmpClearCol[2],0.0f);
+		gl.glClearColor(tmpClearCol[0],tmpClearCol[1],tmpClearCol[2],1.0f);
 
 	   	gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
 	   	gl.glLoadIdentity();
