@@ -27,7 +27,7 @@ public final class Model
 		// 0 - cube
 		// 1 - square pyramid
 		// ... TODO add more
-	private float chromStrength; // the strength (translation) of chromatic abberation effect
+	private float chromMagnitude; // the strength (translation) of chromatic abberation effect
 	private float[] clearColor; 
 	private int currClearColor = 0;
 
@@ -48,7 +48,7 @@ public final class Model
 		rotationSpeed = .15f;
 		isRotating = true;
 		distance = -5.0f;
-		chromStrength = .1f;
+		chromMagnitude = .1f;
 
 		clearColor = CLEAR_COLORS[0];
 
@@ -64,8 +64,8 @@ public final class Model
 		return clearColor;
 	}
 
-	public float getChromStrength(){
-		return chromStrength;
+	public float getChromMagnitude(){
+		return chromMagnitude;
 	}
 
 	public int getGeomID(){
@@ -125,8 +125,8 @@ public final class Model
 		clearColor[2] = b;
 	}
 
-	public void setChromStrength(float x){
-		chromStrength = x;
+	public void setChromMagnitude(float x){
+		chromMagnitude = x;
 	}
 
 	public void setGeomID(int x){

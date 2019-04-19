@@ -137,10 +137,10 @@ public final class View
 		switch (model.getGeomID())
 		{
 			case 0:
-				drawCube(gl,1.0f,model.getChromStrength());
+				drawCube(gl,1.0f);
 				break;
 			case 1:
-				drawSquarePyramid(gl, 1.0f, model.getChromStrength());
+				drawSquarePyramid(gl, 1.0f);
 				break;
 		}
 
@@ -202,8 +202,9 @@ public final class View
 	// Display helper methods
 	// ***********************************
 
-	private void drawCube(GL2 gl, float alpha, float chromMagnitude){
+	private void drawCube(GL2 gl, float alpha){
 		// NOTE: We may want to use tris?
+		float chromMagnitude = model.getChromMagnitude();
 
 		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube 
 
@@ -254,8 +255,9 @@ public final class View
 		gl.glEnd(); // Done Drawing The Quad
 	}
 
-	private void drawSquarePyramid(GL2 gl, float alpha, float chromMagnitude){
-		
+	private void drawSquarePyramid(GL2 gl, float alpha){
+		float chromMagnitude = model.getChromMagnitude();
+
 		gl.glBegin(GL2.GL_TRIANGLES);
 
 		for (int i = 0; i < PYRAMID_4.length; ++i){

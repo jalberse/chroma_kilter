@@ -78,10 +78,10 @@ public final class KeyHandler extends KeyAdapter
 				break;
 			// Increase/decrease strength of chromatic effect
 			case KeyEvent.VK_UP:
-				model.setChromStrength(model.getChromStrength() + .01f);
+				model.setChromMagnitude(model.getChromMagnitude() + .01f);
 				break;
 			case KeyEvent.VK_DOWN:
-				model.setChromStrength(model.getChromStrength() - .01f);
+				model.setChromMagnitude(model.getChromMagnitude() - .01f);
 				break;
 			// Set clear color (background color)
 			case KeyEvent.VK_LEFT:
