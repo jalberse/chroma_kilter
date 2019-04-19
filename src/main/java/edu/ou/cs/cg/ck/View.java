@@ -203,19 +203,21 @@ public final class View
 	// ***********************************
 
 	private void drawCube(GL2 gl, float alpha){
-		
+		// TODO Enable switching between non-destructive local color
+		// 		and mode where abberations dont have depth testing
+		//		i.e. set depthmask false for abs but dont use stencil
+		//			bc it looks good and 
+
 		gl.glEnable(GL.GL_STENCIL_TEST);
 		gl.glClearStencil(0);
 		gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
 
 		// Write 1's into stencil buffer to make a "hole"
-		gl.glColorMask(true,true,true,true);
 		gl.glDepthMask(false);
 		gl.glStencilFunc(GL.GL_ALWAYS,1,~0);
 		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
 		drawCubeBaseObject(gl, alpha);
 
-		gl.glColorMask(true,true,true,true);
 		gl.glDepthMask(true);
 		gl.glStencilFunc(GL.GL_NOTEQUAL,1,~0);
 		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_KEEP);
@@ -306,7 +308,6 @@ public final class View
 	// Cube defined with quads
 	private static final Point3D[] CUBE_GEOMETRY = new Point3D[]
 	{
-		// TODO: Move the points in here rolling a custom 3d point class
 		new Point3D(1.0f,1.0f,-1.0f),
 		new Point3D(-1.0f, 1.0f, -1.0f),
 		new Point3D( -1.0f, 1.0f, 1.0f ),
