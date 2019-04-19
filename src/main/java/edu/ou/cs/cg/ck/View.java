@@ -203,39 +203,49 @@ public final class View
 	// ***********************************
 
 	private void drawCube(GL2 gl, float alpha){
-		// NOTE: We may want to use tris?
+		
+		gl.glEnable(GL.GL_STENCIL_TEST);
+		gl.glClearStencil(0);
+		gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
+
+		// Write 1's into stencil buffer to make a "hole"
+		gl.glColorMask(true,true,true,true);
+		gl.glDepthMask(false);
+		gl.glStencilFunc(GL.GL_ALWAYS,1,~0);
+		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
+		drawCubeBaseObject(gl, alpha);
+
+		gl.glColorMask(true,true,true,true);
+		gl.glDepthMask(true);
+		gl.glStencilFunc(GL.GL_NOTEQUAL,1,~0);
+		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_KEEP);
+		drawCubeAb(gl, alpha);
+
+		gl.glDisable(GL.GL_STENCIL_TEST);
+	}
+
+	private void drawCubeBaseObject(GL2 gl, float alpha){
+		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube 
+		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
+			// Specify color of each face
+			if (i == 0) gl.glColor4f( 1f,0f,0f,alpha ); // red color
+			if (i == 4) gl.glColor4f( 0f,1f,0f,alpha  ); // green color
+			if (i == 8) gl.glColor4f( 0f,0f,1f,alpha  ); // blue color
+			if (i == 12) gl.glColor4f( 1f,1f,0f,alpha  ); // yellow
+			if (i == 16) gl.glColor4f( 1f,0f,1f,alpha  ); // purple
+			if (i == 20) gl.glColor4f( 0f,1f,1f,alpha  ); // sky blue
+			// Draw the vertex
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX(),
+						  CUBE_GEOMETRY[i].getY(),
+						  CUBE_GEOMETRY[i].getZ());
+		}
+		gl.glEnd(); // Done Drawing The Quad
+	}
+
+	private void drawCubeAb(GL2 gl, float alpha){
 		float chromMagnitude = model.getChromMagnitude();
 		float distance = model.getDistance();
-
 		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube 
-
-		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
-			// Specify color of each face
-			if (i == 0) gl.glColor4f( 1f,0f,0f,alpha ); // red color
-			if (i == 4) gl.glColor4f( 0f,1f,0f,alpha  ); // green color
-			if (i == 8) gl.glColor4f( 0f,0f,1f,alpha  ); // blue color
-			if (i == 12) gl.glColor4f( 1f,1f,0f,alpha  ); // yellow
-			if (i == 16) gl.glColor4f( 1f,0f,1f,alpha  ); // purple
-			if (i == 20) gl.glColor4f( 0f,1f,1f,alpha  ); // sky blue
-			// Draw the vertex
-			gl.glVertex3f(CUBE_GEOMETRY[i].getX(),
-						  CUBE_GEOMETRY[i].getY(),
-						  CUBE_GEOMETRY[i].getZ());
-		}
-
-		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
-			// Specify color of each face
-			if (i == 0) gl.glColor4f( 1f,0f,0f,alpha ); // red color
-			if (i == 4) gl.glColor4f( 0f,1f,0f,alpha  ); // green color
-			if (i == 8) gl.glColor4f( 0f,0f,1f,alpha  ); // blue color
-			if (i == 12) gl.glColor4f( 1f,1f,0f,alpha  ); // yellow
-			if (i == 16) gl.glColor4f( 1f,0f,1f,alpha  ); // purple
-			if (i == 20) gl.glColor4f( 0f,1f,1f,alpha  ); // sky blue
-			// Draw the vertex
-			gl.glVertex3f(CUBE_GEOMETRY[i].getX(),
-						  CUBE_GEOMETRY[i].getY(),
-						  CUBE_GEOMETRY[i].getZ());
-		}
 
 		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
 		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
