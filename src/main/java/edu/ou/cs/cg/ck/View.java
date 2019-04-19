@@ -205,6 +205,7 @@ public final class View
 	private void drawCube(GL2 gl, float alpha){
 		// NOTE: We may want to use tris?
 		float chromMagnitude = model.getChromMagnitude();
+		float distance = model.getDistance();
 
 		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube 
 
@@ -239,17 +240,17 @@ public final class View
 		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
 		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
 			// Draw the vertex
-			gl.glVertex3f(CUBE_GEOMETRY[i].getX() - chromMagnitude,
-						  CUBE_GEOMETRY[i].getY() - chromMagnitude,
-						  CUBE_GEOMETRY[i].getZ() - chromMagnitude);
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX() - chromMagnitude * (-distance - CUBE_GEOMETRY[i].getZ()),
+						  CUBE_GEOMETRY[i].getY() - chromMagnitude * (-distance - CUBE_GEOMETRY[i].getZ()),
+						  CUBE_GEOMETRY[i].getZ() - chromMagnitude * (-distance - CUBE_GEOMETRY[i].getZ()));
 		}
 		
 		gl.glColor4f( 1f,0f,0f,.3f); // red color
 		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
 			// Draw the vertex
-			gl.glVertex3f(CUBE_GEOMETRY[i].getX() + chromMagnitude,
-						  CUBE_GEOMETRY[i].getY() + chromMagnitude,
-						  CUBE_GEOMETRY[i].getZ() + chromMagnitude);
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX() + chromMagnitude * (-distance - CUBE_GEOMETRY[i].getZ()),
+						  CUBE_GEOMETRY[i].getY() + chromMagnitude * (-distance - CUBE_GEOMETRY[i].getZ()),
+						  CUBE_GEOMETRY[i].getZ() + chromMagnitude * (-distance - CUBE_GEOMETRY[i].getZ()));
 		}
 
 		gl.glEnd(); // Done Drawing The Quad
@@ -257,6 +258,7 @@ public final class View
 
 	private void drawSquarePyramid(GL2 gl, float alpha){
 		float chromMagnitude = model.getChromMagnitude();
+		float distance = model.getDistance();
 
 		gl.glBegin(GL2.GL_TRIANGLES);
 
@@ -272,16 +274,16 @@ public final class View
 
 		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
 		for (int i = 0; i < PYRAMID_4.length; ++i){
-			gl.glVertex3f(PYRAMID_4[i].getX() - chromMagnitude,
-						  PYRAMID_4[i].getY() - chromMagnitude,
-						  PYRAMID_4[i].getZ() - chromMagnitude);
+			gl.glVertex3f(PYRAMID_4[i].getX() - chromMagnitude * (-distance - PYRAMID_4[i].getZ()),
+						  PYRAMID_4[i].getY() - chromMagnitude * (-distance - PYRAMID_4[i].getZ()),
+						  PYRAMID_4[i].getZ() - chromMagnitude * (-distance - PYRAMID_4[i].getZ()));
 		}
 
 		gl.glColor4f( 1f,0f,0f,.3f); // red color
 		for (int i = 0; i < PYRAMID_4.length; ++i){
-			gl.glVertex3f(PYRAMID_4[i].getX() + chromMagnitude,
-						  PYRAMID_4[i].getY() + chromMagnitude,
-						  PYRAMID_4[i].getZ() + chromMagnitude);
+			gl.glVertex3f(PYRAMID_4[i].getX() + chromMagnitude * (-distance - PYRAMID_4[i].getZ()),
+						  PYRAMID_4[i].getY() + chromMagnitude * (-distance - PYRAMID_4[i].getZ()),
+						  PYRAMID_4[i].getZ() + chromMagnitude * (-distance - PYRAMID_4[i].getZ()));
 		}
 
 		gl.glEnd();
