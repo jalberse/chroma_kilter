@@ -6,6 +6,7 @@
 | i, o  |  Change rotation speed |
 | k, l |  Change distance to object |
 | 0-9 | Change geometry |
+| z,x,c | Toggle render modes (nondestructive, basic, nodepth) |
 | up | increase strength of chromatic abberation |
 | down | decrease strength of chromatic abberation | 
 | left, right | toggle background color |

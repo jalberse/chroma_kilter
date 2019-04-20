@@ -216,19 +216,23 @@ public final class View
 	// ***********************************
 
 	private void drawObject(GL2 gl, float alpha, Point3D[] obj){
-		// TODO Enable switching between non-destructive local color
-		// 		and mode where abberations dont have depth testing
-		//		i.e. set depthmask false for abs but dont use stencil
-		//			bc it looks good and 
+		// Preprocess for the base object
+		switch (model.getRenderMode())
+		{
+			case "nondestructive":
+				gl.glEnable(GL.GL_STENCIL_TEST);
+				gl.glClearStencil(0);
+				gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
 
-		gl.glEnable(GL.GL_STENCIL_TEST);
-		gl.glClearStencil(0);
-		gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
+				// Write 1's into stencil buffer to make a "hole" on base object
+				gl.glDepthMask(false);
+				gl.glStencilFunc(GL.GL_ALWAYS,1,~0);
+				gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
+				break;
+		}
+		
 
-		// Write 1's into stencil buffer to make a "hole" on base object
-		gl.glDepthMask(false);
-		gl.glStencilFunc(GL.GL_ALWAYS,1,~0);
-		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
+		// Draw the base object
 
 		// Primitive objects are exceptions - they might be defined with Quads (cube)
 		// Or they might have unique colors per face (eg Pyramid)
@@ -248,11 +252,21 @@ public final class View
 				break;
 		}
 
-		// Only draw where base object isn't
-		gl.glDepthMask(true);
-		gl.glStencilFunc(GL.GL_NOTEQUAL,1,~0);
-		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_KEEP);
-
+		// Set up for aberations
+		switch (model.getRenderMode())
+		{
+			case "nondestructive":
+				// Only draw where base object isn't
+				gl.glDepthMask(true);
+				gl.glStencilFunc(GL.GL_NOTEQUAL,1,~0);
+				gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_KEEP);
+				break;
+			case "nodepth":
+				gl.glDisable(GL2.GL_DEPTH_TEST);
+				break;
+		}
+		
+		// Draw the aberations
 		switch (model.getGeomID())
 		{
 			case 0:
@@ -268,8 +282,18 @@ public final class View
 				break;
 		}
 
-		// Disable stencil for next thing drawn in scene
-		gl.glDisable(GL.GL_STENCIL_TEST);
+		// Undo changes necessary for each render mode
+		switch (model.getRenderMode())
+		{
+			case "nondestructive":
+				// Disable stencil for next thing drawn in scene
+				gl.glDisable(GL.GL_STENCIL_TEST);
+				break;
+			case "nodepth":
+				gl.glEnable(GL2.GL_DEPTH_TEST);
+				break;
+		}
+		
 	}
 
 	/*

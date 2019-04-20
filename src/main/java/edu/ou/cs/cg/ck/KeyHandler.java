@@ -94,6 +94,19 @@ public final class KeyHandler extends KeyAdapter
 			case KeyEvent.VK_RIGHT:
 				model.setClearColorNext();
 				break;
+			// Toggle render modes
+			case KeyEvent.VK_Z:
+				// Use a stencil on original object - keep local colors
+				model.setRenderMode("nondestructive");
+				break;
+			case KeyEvent.VK_X:
+				// Simply draw with offset
+				model.setRenderMode("basic");
+				break;
+			case KeyEvent.VK_C:
+				// Do not check depth on chromAb
+				model.setRenderMode("nodepth");
+				break;
 		}
 	}
 }

@@ -29,7 +29,8 @@ public final class Model
 		// ... TODO add more
 	private float chromMagnitude; // the strength (translation) of chromatic abberation effect
 	private float[] clearColor; 
-	private int currClearColor = 0;
+	private int currClearColor;
+	private String renderMode; // determines how we render the abberations
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -51,16 +52,22 @@ public final class Model
 		isRotating = true;
 		distance = -5.0f;
 		chromMagnitude = .1f;
+		renderMode = "nondestructive"; 
 
 		clearColor = CLEAR_COLORS[0];
 
-
 		geomID = 0;
+
+
 	}
 
 	//**********************************************************************
 	// Public Methods (Access Variables)
 	//**********************************************************************
+
+	public String getRenderMode(){
+		return renderMode;
+	}
 
 	public float[] getClearColor(){
 		return clearColor;
@@ -107,6 +114,10 @@ public final class Model
 	// Public Methods (Modify Variables)
 	//**********************************************************************
 	
+	public void setRenderMode(String s){
+		renderMode = s;
+	}
+
 	public void setClearColorPrevious(){
 		if (currClearColor > 0){
 			currClearColor--;
