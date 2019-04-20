@@ -43,6 +43,8 @@ public final class Model
 		origin = new Point2D.Double(0.0, 0.0);
 		cursor = null;
 
+		// TODO: Let user specify alpha of objects in scene. Already built into draw methods
+
 		k = 0;
 
 		rotationSpeed = .15f;

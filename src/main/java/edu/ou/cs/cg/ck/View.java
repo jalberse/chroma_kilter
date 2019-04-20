@@ -119,6 +119,10 @@ public final class View
 	private void update(GLAutoDrawable drawable){
 		k++; // increment frame ctr
 		model.setK(k);
+
+		if (model.isRotating()){
+			r -= model.getRotationSpeed(); // change rotation angle iff spinning enabled
+		}
 	}
 
 	// *************************
@@ -130,45 +134,35 @@ public final class View
 
 		// Update the pipeline here (clear buffer etc)
 		final GL2 gl = drawable.getGL().getGL2();
+		update(drawable);
 
 		// set clear color (background color)
 		float[] tmpClearCol = model.getClearColor();
 		gl.glClearColor(tmpClearCol[0],tmpClearCol[1],tmpClearCol[2],1.0f);
-
-	   	gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_STENCIL_BUFFER_BIT);
+		   
+		// Transform the whole scene
 	   	gl.glLoadIdentity();
 	   	gl.glTranslatef( 0f, 0f, model.getDistance()); // translates back 5 units
- 
-		update(drawable);
-
-		// Rotate The Cube On X, Y & Z
 		// TODO: Let user specify axis of rotation
-	   	gl.glRotatef(r, 1.0f, 1.0f, 1.0f); 
-		
-		// Draw the form
-		// TODO: Switch case for different geometry (cube,cone,pyramid,teapot...), specified by model/user
+		gl.glRotatef(r, 1.0f, 1.0f, 1.0f); // Rotate The Scene On X, Y & Z
 
-		// TODO: Place these switch cases into a function along with the stencil code (see drawCube)
-
-		// TODO: Mess around for cool effects here
+		// TODO: A case where we draw a more complicated scene with many objects
+		// Draw the scene
 		switch (model.getGeomID())
 		{
 			case 0:
-				drawCube(gl,1.0f);
+				drawObject(gl,1.0f,CUBE_GEOMETRY);
 				break;
 			case 1:
-				drawSquarePyramid(gl, 1.0f);
+				drawObject(gl, 1.0f,PYRAMID_4);
 				break;
 			case 2:
-				drawTeapot(gl,1.0f);
+				drawObject(gl,1.0f,teapotVerts);
 				break;
 		}
 
 	   	gl.glFlush();
-		
-		if (model.isRotating()){
-			r -= model.getRotationSpeed(); // change rotation angle iff spinning enabled
-		}
 		
 	}
 	
@@ -221,7 +215,7 @@ public final class View
 	// Display helper methods
 	// ***********************************
 
-	private void drawCube(GL2 gl, float alpha){
+	private void drawObject(GL2 gl, float alpha, Point3D[] obj){
 		// TODO Enable switching between non-destructive local color
 		// 		and mode where abberations dont have depth testing
 		//		i.e. set depthmask false for abs but dont use stencil
@@ -231,19 +225,101 @@ public final class View
 		gl.glClearStencil(0);
 		gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
 
-		// Write 1's into stencil buffer to make a "hole"
+		// Write 1's into stencil buffer to make a "hole" on base object
 		gl.glDepthMask(false);
 		gl.glStencilFunc(GL.GL_ALWAYS,1,~0);
 		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
-		drawCubeBaseObject(gl, alpha);
 
+		// Primitive objects are exceptions - they might be defined with Quads (cube)
+		// Or they might have unique colors per face (eg Pyramid)
+		// So they have their own drawing methods
+		switch (model.getGeomID())
+		{
+			case 0:
+				drawCubeBaseObject(gl,alpha);
+				break;
+			case 1:
+				drawSquarePyramidBaseObject(gl, alpha);
+				break;
+			// Done with primitive exceptions
+			// Draw complex forms with Tris and monocolor 
+			default:
+				drawBaseObjectTri(gl, alpha, obj);
+				break;
+		}
+
+		// Only draw where base object isn't
 		gl.glDepthMask(true);
 		gl.glStencilFunc(GL.GL_NOTEQUAL,1,~0);
 		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_KEEP);
-		drawCubeAb(gl, alpha);
 
+		switch (model.getGeomID())
+		{
+			case 0:
+				drawCubeAb(gl,alpha);
+				break;
+			case 1:
+				drawSquarePyramidAb(gl,alpha);
+				break;
+			// Done with primitive exceptions
+			// Draw complex forms with Tris
+			default:
+				drawObjectAbTri(gl, alpha, obj);
+				break;
+		}
+
+		// Disable stencil for next thing drawn in scene
 		gl.glDisable(GL.GL_STENCIL_TEST);
 	}
+
+	/*
+		Draws a base object with Tris
+		used for complicated geometries e.g. Suzanne and teapot
+	*/
+	private void drawBaseObjectTri(GL2 gl, float alpha, Point3D[] obj){
+		gl.glBegin(GL2.GL_TRIANGLES); 
+		gl.glColor4f( 1f,0.59f,0.518f,alpha ); // pinkish - TODO let user toggle
+		for (int i = 0; i < obj.length; ++i){
+			gl.glVertex3f(obj[i].getX(),
+						  obj[i].getY(),
+						  obj[i].getZ());
+		}
+		gl.glEnd();
+	}
+
+	/*
+		Draw chromatic abberations of an object with Tris
+		TODO - ChromAb based on actual RGB of each vertex?
+	*/
+	private void drawObjectAbTri(GL2 gl, float alpha, Point3D[] obj){
+		float chromMagnitude = model.getChromMagnitude();
+		float distance = model.getDistance();
+
+		gl.glBegin(GL2.GL_TRIANGLES); 
+
+		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
+		for (int i = 0; i < obj.length; ++i){
+			// Draw the vertex, displaced based on distance to camera
+			gl.glVertex3f(obj[i].getX() - chromMagnitude * (-distance - obj[i].getZ()),
+						  obj[i].getY() - chromMagnitude * (-distance - obj[i].getZ()),
+						  obj[i].getZ() - chromMagnitude * (-distance - obj[i].getZ()));
+		}
+		
+		gl.glColor4f( 1f,0f,0f,.3f); // red color
+		for (int i = 0; i < obj.length; ++i){
+			// Draw the vertex
+			gl.glVertex3f(obj[i].getX() + chromMagnitude * (-distance - obj[i].getZ()),
+						  obj[i].getY() + chromMagnitude * (-distance - obj[i].getZ()),
+						  obj[i].getZ() + chromMagnitude * (-distance - obj[i].getZ()));
+		}
+
+		gl.glEnd(); // Done Drawing The Quad
+	}
+
+	// ****************
+	// Special drawing methods for primitives, which have some exceptions
+	// (Quads, colors) that means we can't lump them with complicated geometries
+	// *****************
 
 	private void drawCubeBaseObject(GL2 gl, float alpha){
 		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube 
@@ -287,10 +363,7 @@ public final class View
 		gl.glEnd(); // Done Drawing The Quad
 	}
 
-	private void drawSquarePyramid(GL2 gl, float alpha){
-		float chromMagnitude = model.getChromMagnitude();
-		float distance = model.getDistance();
-
+	private void drawSquarePyramidBaseObject(GL2 gl, float alpha){
 		gl.glBegin(GL2.GL_TRIANGLES);
 
 		for (int i = 0; i < PYRAMID_4.length; ++i){
@@ -302,6 +375,15 @@ public final class View
 						  PYRAMID_4[i].getY(),
 						  PYRAMID_4[i].getZ());
 		}
+
+		gl.glEnd();
+	}
+
+	private void drawSquarePyramidAb(GL2 gl, float alpha){
+		float chromMagnitude = model.getChromMagnitude();
+		float distance = model.getDistance();
+
+		gl.glBegin(GL2.GL_TRIANGLES);
 
 		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
 		for (int i = 0; i < PYRAMID_4.length; ++i){
@@ -318,61 +400,6 @@ public final class View
 		}
 
 		gl.glEnd();
-	}
-
-	private void drawTeapot(GL2 gl, float alpha){
-		gl.glEnable(GL.GL_STENCIL_TEST);
-		gl.glClearStencil(0);
-		gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
-
-		// Write 1's into stencil buffer to make a "hole"
-		gl.glDepthMask(false);
-		gl.glStencilFunc(GL.GL_ALWAYS,1,~0);
-		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
-		drawTeapotBaseObject(gl, alpha);
-
-		gl.glDepthMask(true);
-		gl.glStencilFunc(GL.GL_NOTEQUAL,1,~0);
-		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_KEEP);
-		drawTeapotAb(gl, alpha);
-
-		gl.glDisable(GL.GL_STENCIL_TEST);
-	}
-
-	private void drawTeapotBaseObject(GL2 gl, float alpha){
-		gl.glBegin(GL2.GL_TRIANGLES); // Start Drawing The Cube 
-		gl.glColor4f( 1f,0.59f,0.518f,alpha ); // pinkish
-		for (int i = 0; i < teapotVerts.length; ++i){
-			// Draw the vertex
-			gl.glVertex3f(teapotVerts[i].getX(),
-						  teapotVerts[i].getY(),
-						  teapotVerts[i].getZ());
-		}
-		gl.glEnd(); // Done Drawing The Quad
-	}
-
-	private void drawTeapotAb(GL2 gl, float alpha) {
-		float chromMagnitude = model.getChromMagnitude();
-		float distance = model.getDistance();
-		gl.glBegin(GL2.GL_TRIANGLES); // Start Drawing The teapot
-
-		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
-		for (int i = 0; i < teapotVerts.length; ++i){
-			// Draw the vertex
-			gl.glVertex3f(teapotVerts[i].getX() - chromMagnitude * (-distance - teapotVerts[i].getZ()),
-						  teapotVerts[i].getY() - chromMagnitude * (-distance - teapotVerts[i].getZ()),
-						  teapotVerts[i].getZ() - chromMagnitude * (-distance - teapotVerts[i].getZ()));
-		}
-		
-		gl.glColor4f( 1f,0f,0f,.3f); // red color
-		for (int i = 0; i < teapotVerts.length; ++i){
-			// Draw the vertex
-			gl.glVertex3f(teapotVerts[i].getX() + chromMagnitude * (-distance - teapotVerts[i].getZ()),
-						  teapotVerts[i].getY() + chromMagnitude * (-distance - teapotVerts[i].getZ()),
-						  teapotVerts[i].getZ() + chromMagnitude * (-distance - teapotVerts[i].getZ()));
-		}
-
-		gl.glEnd(); // Done Drawing The Quad
 	}
 
 	// ***********************************
