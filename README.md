@@ -17,5 +17,4 @@
 - More geometries
 	- Sphere, dodeca, cone, teapot, monkey head (suzanne) ...
 - Multiple objects at once to observe interaction
-- Consider generalizing code for effect (simply pass geometry for GL_QUADS, TRIS etc instead of manually for each drawn object)
 - Very minor stress testing

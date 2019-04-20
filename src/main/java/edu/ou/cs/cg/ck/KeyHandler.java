@@ -9,7 +9,7 @@ import edu.ou.cs.cg.utilities.Utilities;
 
 /**
  * The <CODE>KeyHandler</CODE> class.<P>
- *
+ * 
  * @author  Chris Weaver
  * @version %I%, %G%
  */
@@ -79,6 +79,10 @@ public final class KeyHandler extends KeyAdapter
 			case KeyEvent.VK_NUMPAD2:
 			case KeyEvent.VK_2:
 				model.setGeomID(2);
+				break;
+			case KeyEvent.VK_NUMPAD3:
+			case KeyEvent.VK_3:
+				model.setGeomID(3);
 				break;
 			// Increase/decrease strength of chromatic effect
 			case KeyEvent.VK_UP:

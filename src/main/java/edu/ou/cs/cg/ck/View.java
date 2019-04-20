@@ -8,26 +8,6 @@ import com.jogamp.opengl.glu.*;
 import com.jogamp.opengl.util.FPSAnimator;
 import java.util.*;
 
-// will probably use...
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.text.DecimalFormat;
-import java.util.List;
-import javax.swing.*;
-import com.jogamp.opengl.*;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.util.*;
-import com.jogamp.opengl.util.gl2.GLUT;
-
-import org.omg.CORBA.FloatSeqHolder;
-
-import java.lang.Math;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import edu.ou.cs.cg.utilities.Utilities;
-import java.awt.event.*;
-import java.awt.geom.*;
-
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -66,6 +46,7 @@ public final class View
 	private float r;
 
 	private Point3D[] teapotVerts;
+	private Point3D[] suzanneVerts;
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -90,6 +71,9 @@ public final class View
 
 		teapotVerts = new Point3D[5184 / 3];
 		readInTeapot(); // places verts into array from file
+
+		suzanneVerts = new Point3D[511];
+		readInSuzanne(); 
 
 		// Initialize animation
 		animator = new FPSAnimator(canvas, DEFAULT_FRAMES_PER_SECOND);
@@ -159,6 +143,9 @@ public final class View
 				break;
 			case 2:
 				drawObject(gl,1.0f,teapotVerts);
+				break;
+			case 3:
+				drawObject(gl,1.0f,suzanneVerts);
 				break;
 		}
 
@@ -484,6 +471,8 @@ public final class View
       new Point3D(-1.0f,-1.0f, 1.0f),
 	};
 
+	// TODO make a sensible and standard method for reading in these files
+	// 		(Have them separate because they have different formats for now)
 	private void readInTeapot(){
 		int j = 0;
 		InputStream in = this.getClass().getResourceAsStream("resources/teapot");
@@ -496,6 +485,36 @@ public final class View
 					vert_f[i] = Float.parseFloat(verts[i]);
 				}
 				teapotVerts[j] = new Point3D(vert_f[0],vert_f[1],vert_f[2]);
+				j++;
+			}
+		}
+		catch (FileNotFoundException e){
+			e.printStackTrace();
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	private void readInSuzanne(){
+		// TODO
+		/*
+			This just reads in the vertices - originally from a .obj
+			Need to place them in correct order for TRIs by looking at the .obj file
+			https://github.com/OpenGLInsights/OpenGLInsightsCode/blob/master/Chapter%2026%20Indexing%20Multiple%20Vertex%20Arrays/article/suzanne.obj
+		*/
+		int j = 0;
+		InputStream in = this.getClass().getResourceAsStream("resources/suzanne");
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(in))){
+			String line;
+			while ((line = br.readLine()) != null){
+				String[] verts = line.split(" ");
+				float[] vert_f = new float[4];
+				for (int i = 0; i < verts.length; ++i){
+					vert_f[i] = Float.parseFloat(verts[i]);
+				}
+				System.out.println(verts[0] + "," + verts[1] + "," + verts[2]);
+				suzanneVerts[j] = new Point3D(vert_f[0],vert_f[1],vert_f[2]);
 				j++;
 			}
 		}
