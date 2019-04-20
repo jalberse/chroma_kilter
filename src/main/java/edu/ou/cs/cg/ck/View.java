@@ -18,11 +18,21 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.gl2.GLUT;
+
+import org.omg.CORBA.FloatSeqHolder;
+
 import java.lang.Math;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import edu.ou.cs.cg.utilities.Utilities;
 import java.awt.event.*;
 import java.awt.geom.*;
+
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 
 
 public final class View
@@ -55,6 +65,8 @@ public final class View
 	
 	private float r;
 
+	private Point3D[] teapotVerts;
+
 	//**********************************************************************
 	// Constructors and Finalizer
 	//**********************************************************************
@@ -75,6 +87,9 @@ public final class View
 		// Initialize controller (interaction handlers)
 		keyHandler = new KeyHandler(this, model);
 		mouseHandler = new MouseHandler(this, model);
+
+		teapotVerts = new Point3D[5184 / 3];
+		readInTeapot(); // places verts into array from file
 
 		// Initialize animation
 		animator = new FPSAnimator(canvas, DEFAULT_FRAMES_PER_SECOND);
@@ -133,6 +148,8 @@ public final class View
 		// Draw the form
 		// TODO: Switch case for different geometry (cube,cone,pyramid,teapot...), specified by model/user
 
+		// TODO: Place these switch cases into a function along with the stencil code (see drawCube)
+
 		// TODO: Mess around for cool effects here
 		switch (model.getGeomID())
 		{
@@ -142,11 +159,13 @@ public final class View
 			case 1:
 				drawSquarePyramid(gl, 1.0f);
 				break;
+			case 2:
+				drawTeapot(gl,1.0f);
+				break;
 		}
 
 	   	gl.glFlush();
 		
-		// TODO: Store rotation speed in model, change with keys
 		if (model.isRotating()){
 			r -= model.getRotationSpeed(); // change rotation angle iff spinning enabled
 		}
@@ -301,6 +320,61 @@ public final class View
 		gl.glEnd();
 	}
 
+	private void drawTeapot(GL2 gl, float alpha){
+		gl.glEnable(GL.GL_STENCIL_TEST);
+		gl.glClearStencil(0);
+		gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
+
+		// Write 1's into stencil buffer to make a "hole"
+		gl.glDepthMask(false);
+		gl.glStencilFunc(GL.GL_ALWAYS,1,~0);
+		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
+		drawTeapotBaseObject(gl, alpha);
+
+		gl.glDepthMask(true);
+		gl.glStencilFunc(GL.GL_NOTEQUAL,1,~0);
+		gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_KEEP);
+		drawTeapotAb(gl, alpha);
+
+		gl.glDisable(GL.GL_STENCIL_TEST);
+	}
+
+	private void drawTeapotBaseObject(GL2 gl, float alpha){
+		gl.glBegin(GL2.GL_TRIANGLES); // Start Drawing The Cube 
+		gl.glColor4f( 1f,0.59f,0.518f,alpha ); // pinkish
+		for (int i = 0; i < teapotVerts.length; ++i){
+			// Draw the vertex
+			gl.glVertex3f(teapotVerts[i].getX(),
+						  teapotVerts[i].getY(),
+						  teapotVerts[i].getZ());
+		}
+		gl.glEnd(); // Done Drawing The Quad
+	}
+
+	private void drawTeapotAb(GL2 gl, float alpha) {
+		float chromMagnitude = model.getChromMagnitude();
+		float distance = model.getDistance();
+		gl.glBegin(GL2.GL_TRIANGLES); // Start Drawing The teapot
+
+		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
+		for (int i = 0; i < teapotVerts.length; ++i){
+			// Draw the vertex
+			gl.glVertex3f(teapotVerts[i].getX() - chromMagnitude * (-distance - teapotVerts[i].getZ()),
+						  teapotVerts[i].getY() - chromMagnitude * (-distance - teapotVerts[i].getZ()),
+						  teapotVerts[i].getZ() - chromMagnitude * (-distance - teapotVerts[i].getZ()));
+		}
+		
+		gl.glColor4f( 1f,0f,0f,.3f); // red color
+		for (int i = 0; i < teapotVerts.length; ++i){
+			// Draw the vertex
+			gl.glVertex3f(teapotVerts[i].getX() + chromMagnitude * (-distance - teapotVerts[i].getZ()),
+						  teapotVerts[i].getY() + chromMagnitude * (-distance - teapotVerts[i].getZ()),
+						  teapotVerts[i].getZ() + chromMagnitude * (-distance - teapotVerts[i].getZ()));
+		}
+
+		gl.glEnd(); // Done Drawing The Quad
+	}
+
 	// ***********************************
 	// Define some geometric forms to draw
 	// ***********************************
@@ -359,5 +433,26 @@ public final class View
       new Point3D(-1.0f,-1.0f, 1.0f),
 	};
 
+	private void readInTeapot(){
+		int j = 0;
+		InputStream in = this.getClass().getResourceAsStream("resources/teapot");
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(in))){
+			String line;
+			while ((line = br.readLine()) != null){
+				String[] verts = line.split(",");
+				float[] vert_f = new float[3];
+				for (int i = 0; i < verts.length; ++i){
+					vert_f[i] = Float.parseFloat(verts[i]);
+				}
+				teapotVerts[j] = new Point3D(vert_f[0],vert_f[1],vert_f[2]);
+				j++;
+			}
+		}
+		catch (FileNotFoundException e){
+			e.printStackTrace();
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+	}
 }
-
