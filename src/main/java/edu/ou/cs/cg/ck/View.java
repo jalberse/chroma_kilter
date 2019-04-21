@@ -131,7 +131,8 @@ public final class View
 		// TODO: Let user specify axis of rotation
 		gl.glRotatef(r, 1.0f, 1.0f, 1.0f); // Rotate The Scene On X, Y & Z
 
-		// TODO: A case where we draw a more complicated scene with many objects
+		// TODO: 8 objects in a cube scene
+		// TODO: Objects in a (rough) line to view overlaps scene
 		// Draw the scene
 		switch (model.getGeomID())
 		{
@@ -300,7 +301,6 @@ public final class View
 
 	/*
 		Draw chromatic abberations of an object with Tris
-		TODO - ChromAb based on actual RGB of each vertex?
 	*/
 	private void drawObjectAbTri(GL2 gl, float alpha, Point3D[] obj){
 		float chromMagnitude = model.getChromMagnitude();
@@ -311,6 +311,11 @@ public final class View
 		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
 		for (int i = 0; i < obj.length; ++i){
 			// Draw the vertex, displaced based on distance to camera
+			// TODO Make a function (switch case - user chooses from function list)
+			//		That determines strength of effect from chromMagnitude and distance
+			//		Don't forget to call it from other drawObject methods!
+
+			// TODO Affix and choose angle of abberation effect
 			gl.glVertex3f(obj[i].getX() - chromMagnitude * (-distance - obj[i].getZ()),
 						  obj[i].getY() - chromMagnitude * (-distance - obj[i].getZ()),
 						  obj[i].getZ() - chromMagnitude * (-distance - obj[i].getZ()));
@@ -499,9 +504,7 @@ public final class View
 	private void readInSuzanne(){
 		// TODO
 		/*
-			This just reads in the vertices - originally from a .obj
-			Need to place them in correct order for TRIs by looking at the .obj file
-			https://github.com/OpenGLInsights/OpenGLInsightsCode/blob/master/Chapter%2026%20Indexing%20Multiple%20Vertex%20Arrays/article/suzanne.obj
+			Make this function work for .obj files! We want to read in arbitrary .obj
 		*/
 		int j = 0;
 		InputStream in = this.getClass().getResourceAsStream("resources/suzanne");
@@ -513,7 +516,6 @@ public final class View
 				for (int i = 0; i < verts.length; ++i){
 					vert_f[i] = Float.parseFloat(verts[i]);
 				}
-				System.out.println(verts[0] + "," + verts[1] + "," + verts[2]);
 				suzanneVerts[j] = new Point3D(vert_f[0],vert_f[1],vert_f[2]);
 				j++;
 			}
