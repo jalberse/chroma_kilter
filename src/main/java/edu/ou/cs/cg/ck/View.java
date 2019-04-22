@@ -140,10 +140,10 @@ public final class View
 		switch (model.getGeomID())
 		{
 			case 0:
-				//drawObject(gl,1.0f,CUBE_GEOMETRY);
+				drawObject(gl,1.0f,CUBE_GEOMETRY);
 				break;
 			case 1:
-				//drawObject(gl, 1.0f,PYRAMID_4);
+				drawObject(gl, 1.0f,PYRAMID_4);
 				break;
 			case 2:
 				drawObject(gl,1.0f,teapotVerts);
@@ -215,8 +215,8 @@ public final class View
 	// Display helper methods
 	// ***********************************
 
-	private void drawObject(GL2 gl, float alpha, Face[] obj){
-		// Preprocess for the base object
+	private void prepareEffect(GL2 gl)
+	{
 		switch (model.getRenderMode())
 		{
 			case "nondestructive":
@@ -230,28 +230,10 @@ public final class View
 				gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
 				break;
 		}
-		
+	}
 
-		// Draw the base object
-
-		// Primitive objects are exceptions - they might be defined with Quads (cube)
-		// Or they might have unique colors per face (eg Pyramid)
-		// So they have their own drawing methods
-		switch (model.getGeomID())
-		{
-			case 0:
-				drawCubeBaseObject(gl,alpha);
-				break;
-			case 1:
-				drawSquarePyramidBaseObject(gl, alpha);
-				break;
-			// Done with primitive exceptions
-			// Draw complex forms with Tris and monocolor 
-			default:
-				drawBaseObject(gl, alpha, obj);
-				break;
-		}
-
+	private void midEffect(GL2 gl)
+	{
 		// Set up for aberations
 		switch (model.getRenderMode())
 		{
@@ -265,23 +247,10 @@ public final class View
 				gl.glDisable(GL2.GL_DEPTH_TEST);
 				break;
 		}
-		
-		// Draw the aberations
-		switch (model.getGeomID())
-		{
-			case 0:
-				drawCubeAb(gl,alpha);
-				break;
-			case 1:
-				drawSquarePyramidAb(gl,alpha);
-				break;
-			// Done with primitive exceptions
-			// Draw complex forms with Tris
-			default:
-				drawObjectAbTri(gl, alpha, obj);
-				break;
-		}
+	}
 
+	private void postEffect(GL2 gl)
+	{
 		// Undo changes necessary for each render mode
 		switch (model.getRenderMode())
 		{
@@ -293,11 +262,60 @@ public final class View
 				gl.glEnable(GL2.GL_DEPTH_TEST);
 				break;
 		}
+	}
+
+	private void drawObject(GL2 gl, float alpha, Point3D[] obj)
+	{
+		prepareEffect(gl);
+		switch (model.getGeomID())
+		{
+			case 0:
+				drawCubeBaseObject(gl,alpha);
+				break;
+			case 1:
+				drawSquarePyramidBaseObject(gl, alpha);
+				break;
+		}
+		midEffect(gl);
+		switch (model.getGeomID())
+		{
+			case 0:
+				drawCubeAb(gl,alpha);
+				break;
+			case 1:
+				drawSquarePyramidAb(gl,alpha);
+				break;
+			// Done with primitive exceptions
+			// Draw complex forms with Tris
+			default:
+				
+				break;
+		}
+		postEffect(gl);
+	}
+
+	// Draws an object with abberations
+	private void drawObject(GL2 gl, float alpha, Face[] obj){
+		// Preprocess for the base object
+		prepareEffect(gl);
 		
+		// Draw the base object
+		drawBaseObject(gl, alpha, obj);
+
+		// Preprocess for abberations
+		midEffect(gl);
+
+		// Draw the abberations
+		drawObjectAbTri(gl, alpha, obj);
+
+		// Clean up
+		postEffect(gl);
 	}
 
 	/*
 		Draws an object
+
+		TODO draw wireframe too since we don't have shading
 	*/
 	private void drawBaseObject(GL2 gl, float alpha, Face[] obj){
 		
