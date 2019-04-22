@@ -150,7 +150,8 @@ public final class View
 				drawObject(gl, 1.0f,PYRAMID_4);
 				break;
 			case 2:
-				gl.glRotatef(r, 0f, 0f, 1.0f); // Rotate The Scene On X, Y & Z
+				gl.glTranslatef( 0f, -1f, -2f); // Center it
+				gl.glRotatef(r, 0.3f * (float)Math.cos(r / 15), 1.0f, 0.3f * (float)Math.sin(r / 30)); // Rotate The Scene on Y axis
 				drawObject(gl,1.0f,teapotVerts);
 				break;
 			case 3:
