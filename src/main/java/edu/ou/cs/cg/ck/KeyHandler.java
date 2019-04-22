@@ -84,6 +84,30 @@ public final class KeyHandler extends KeyAdapter
 			case KeyEvent.VK_3:
 				model.setGeomID(3);
 				break;
+			case KeyEvent.VK_NUMPAD4:
+			case KeyEvent.VK_4:
+				model.setGeomID(4);
+				break;
+			case KeyEvent.VK_NUMPAD5:
+			case KeyEvent.VK_5:
+				model.setGeomID(5);
+				break;
+			case KeyEvent.VK_NUMPAD6:
+			case KeyEvent.VK_6:
+				model.setGeomID(6);
+				break;
+			case KeyEvent.VK_NUMPAD7:
+			case KeyEvent.VK_7:
+				model.setGeomID(7);
+				break;
+			case KeyEvent.VK_NUMPAD8:
+			case KeyEvent.VK_8:
+				model.setGeomID(8);
+				break;
+			case KeyEvent.VK_NUMPAD9:
+			case KeyEvent.VK_9:
+				model.setGeomID(9);
+				break;
 			// Increase/decrease strength of chromatic effect
 			case KeyEvent.VK_UP:
 				model.setChromMagnitude(model.getChromMagnitude() + .01f);

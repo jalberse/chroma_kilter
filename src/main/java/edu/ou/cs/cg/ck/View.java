@@ -45,8 +45,11 @@ public final class View
 	
 	private float r;
 
-	private Point3D[] teapotVerts;
-	private Point3D[] suzanneVerts;
+	private Face[] teapotVerts;
+	private Face[] suzanneVerts;
+	private Face[] houseVerts;
+	private Face[] bankVerts;
+	private Face[] flatVerts;
 
 	//**********************************************************************
 	// Constructors and Finalizer
@@ -69,10 +72,11 @@ public final class View
 		keyHandler = new KeyHandler(this, model);
 		mouseHandler = new MouseHandler(this, model);
 
-		teapotVerts = new Point3D[5184 / 3];
-		readInTeapot(); // places verts into array from file
-
+		teapotVerts = loadObj("resources/teapot.obj");
 		suzanneVerts = loadObj("resources/suzanne.obj");
+		houseVerts = loadObj("resources/House.obj");
+		bankVerts = loadObj("resources/Bank.obj");
+		flatVerts = loadObj("resources/Flat.obj");
 
 		// Initialize animation
 		animator = new FPSAnimator(canvas, DEFAULT_FRAMES_PER_SECOND);
@@ -136,16 +140,25 @@ public final class View
 		switch (model.getGeomID())
 		{
 			case 0:
-				drawObject(gl,1.0f,CUBE_GEOMETRY);
+				//drawObject(gl,1.0f,CUBE_GEOMETRY);
 				break;
 			case 1:
-				drawObject(gl, 1.0f,PYRAMID_4);
+				//drawObject(gl, 1.0f,PYRAMID_4);
 				break;
 			case 2:
 				drawObject(gl,1.0f,teapotVerts);
 				break;
 			case 3:
 				drawObject(gl,1.0f,suzanneVerts);
+				break;
+			case 4:
+				drawObject(gl,1.0f,houseVerts);
+				break;
+			case 5:
+				drawObject(gl,1.0f,bankVerts);
+				break;
+			case 6:
+				drawObject(gl,1.0f,flatVerts);
 				break;
 		}
 
@@ -202,7 +215,7 @@ public final class View
 	// Display helper methods
 	// ***********************************
 
-	private void drawObject(GL2 gl, float alpha, Point3D[] obj){
+	private void drawObject(GL2 gl, float alpha, Face[] obj){
 		// Preprocess for the base object
 		switch (model.getRenderMode())
 		{
@@ -235,7 +248,7 @@ public final class View
 			// Done with primitive exceptions
 			// Draw complex forms with Tris and monocolor 
 			default:
-				drawBaseObjectTri(gl, alpha, obj);
+				drawBaseObject(gl, alpha, obj);
 				break;
 		}
 
@@ -284,28 +297,29 @@ public final class View
 	}
 
 	/*
-		Draws a base object with Tris
-		used for complicated geometries e.g. Suzanne and teapot
+		Draws an object
 	*/
-	private void drawBaseObjectTri(GL2 gl, float alpha, Point3D[] obj){
-		gl.glBegin(GL2.GL_TRIANGLES); 
+	private void drawBaseObject(GL2 gl, float alpha, Face[] obj){
+		
 		gl.glColor4f( 1f,0.59f,0.518f,alpha ); // pinkish - TODO let user toggle
 		for (int i = 0; i < obj.length; ++i){
-			gl.glVertex3f(obj[i].getX(),
-						  obj[i].getY(),
-						  obj[i].getZ());
+			gl.glBegin(GL2.GL_POLYGON); 
+			for (int j = 0; j < obj[i].getSize(); ++j){
+				gl.glVertex3f(obj[i].get(j).getX(),
+								obj[i].get(j).getY(),
+								obj[i].get(j).getZ());
+			}
+			gl.glEnd();
 		}
-		gl.glEnd();
+		
 	}
 
 	/*
-		Draw chromatic abberations of an object with Tris
+		Draw chromatic abberations of an object
 	*/
-	private void drawObjectAbTri(GL2 gl, float alpha, Point3D[] obj){
+	private void drawObjectAbTri(GL2 gl, float alpha, Face[] obj){
 		float chromMagnitude = model.getChromMagnitude();
-		float distance = model.getDistance();
-
-		gl.glBegin(GL2.GL_TRIANGLES); 
+		float distance = model.getDistance(); 
 
 		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
 		for (int i = 0; i < obj.length; ++i){
@@ -315,20 +329,28 @@ public final class View
 			//		Don't forget to call it from other drawObject methods!
 
 			// TODO Affix and choose angle of abberation effect
-			gl.glVertex3f(obj[i].getX() - chromMagnitude * (-distance - obj[i].getZ()),
-						  obj[i].getY() - chromMagnitude * (-distance - obj[i].getZ()),
-						  obj[i].getZ() - chromMagnitude * (-distance - obj[i].getZ()));
+			
+			gl.glBegin(GL2.GL_POLYGON); 
+			for (int j = 0; j < obj[i].getSize(); ++j){
+				gl.glVertex3f(obj[i].get(j).getX()  - chromMagnitude * (-distance - obj[i].get(j).getZ()),
+								obj[i].get(j).getY()  - chromMagnitude * (-distance - obj[i].get(j).getZ()),
+								obj[i].get(j).getZ()  - chromMagnitude * (-distance - obj[i].get(j).getZ()));
+			}
+			
+			gl.glEnd();
 		}
 		
 		gl.glColor4f( 1f,0f,0f,.3f); // red color
 		for (int i = 0; i < obj.length; ++i){
-			// Draw the vertex
-			gl.glVertex3f(obj[i].getX() + chromMagnitude * (-distance - obj[i].getZ()),
-						  obj[i].getY() + chromMagnitude * (-distance - obj[i].getZ()),
-						  obj[i].getZ() + chromMagnitude * (-distance - obj[i].getZ()));
+			gl.glBegin(GL2.GL_POLYGON); 
+			for (int j = 0; j < obj[i].getSize(); ++j){
+				gl.glVertex3f(obj[i].get(j).getX()  + chromMagnitude * (-distance - obj[i].get(j).getZ()),
+								obj[i].get(j).getY()  + chromMagnitude * (-distance - obj[i].get(j).getZ()),
+								obj[i].get(j).getZ()  + chromMagnitude * (-distance - obj[i].get(j).getZ()));
+			}
+			
+			gl.glEnd();
 		}
-
-		gl.glEnd(); // Done Drawing The Quad
 	}
 
 	// ****************
@@ -475,36 +497,11 @@ public final class View
       new Point3D(-1.0f,-1.0f, 1.0f),
 	};
 
-	// TODO make a sensible and standard method for reading in these files
-	// 		(Have them separate because they have different formats for now)
-	private void readInTeapot(){
-		int j = 0;
-		InputStream in = this.getClass().getResourceAsStream("resources/teapot");
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(in))){
-			String line;
-			while ((line = br.readLine()) != null){
-				String[] verts = line.split(",");
-				float[] vert_f = new float[3];
-				for (int i = 0; i < verts.length; ++i){
-					vert_f[i] = Float.parseFloat(verts[i]);
-				}
-				teapotVerts[j] = new Point3D(vert_f[0],vert_f[1],vert_f[2]);
-				j++;
-			}
-		}
-		catch (FileNotFoundException e){
-			e.printStackTrace();
-		}
-		catch (IOException e){
-			e.printStackTrace();
-		}
-	}
-
-	private Point3D[] loadObj(String filename)
+	private Face[] loadObj(String filename)
 	{
 		InputStream in  = this.getClass().getResourceAsStream(filename);
 		Vector<Point3D> vertices = new Vector<Point3D>(); // vertex table
-		Vector<Point3D> object = new Vector<Point3D>(); // Vertices in order we draw tris
+		Vector<Face> object = new Vector<Face>(); // Faces
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(in))){
 			String line;
 			while ((line = br.readLine()) != null){
@@ -517,13 +514,11 @@ public final class View
 					vertices.add(new Point3D(x,y,z));
 				}
 				if (tokens[0].equals("f")){
-					Point3D v0 = vertices.get(Integer.parseInt(tokens[1].split("/")[0]) - 1);
-					Point3D v1 = vertices.get(Integer.parseInt(tokens[2].split("/")[0]) - 1);
-					Point3D v2 = vertices.get(Integer.parseInt(tokens[3].split("/")[0]) - 1);
-					object.add(v0);
-					object.add(v1);
-					object.add(v2);
-					System.out.println(1 + Integer.parseInt(tokens[1].split("/")[0]));
+					Face f = new Face();
+					for (int i = 1; i < tokens.length; ++i){
+						f.addVert(vertices.get(Integer.parseInt(tokens[i].split("/")[0]) - 1));
+					}
+					object.add(f);
 				}
 			}
 		}
@@ -535,7 +530,7 @@ public final class View
 		}
 
 		Object[] a = object.toArray();
-		Point3D[] o = Arrays.copyOf(a,a.length,Point3D[].class); 
+		Face[] o = Arrays.copyOf(a,a.length,Face[].class); 
 
 		return o;
 	}
