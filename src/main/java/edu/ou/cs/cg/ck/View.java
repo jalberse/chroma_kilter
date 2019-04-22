@@ -151,23 +151,80 @@ public final class View
 				drawObject(gl,1.0f,teapotVerts);
 				break;
 			case 3:
+				gl.glRotatef(r, 0.0f, 1.0f, 0.0f); // Rotate The Scene On Y
 				drawObject(gl,1.0f,suzanneVerts);
 				break;
 			case 4:
 				gl.glTranslatef(0f, -1f, 0f); // center model
+				// perspective rotation (look down at it)
+				gl.glRotatef(20f, 1f, -.1f, 0f); 
+				gl.glRotatef(r, 0.0f, 1.0f, 0.0f); // Rotate The Scene On Y
 				drawObject(gl,1.0f,houseVerts);
 				break;
 			case 5:
 				gl.glTranslatef(0f, -1f, 0f); // center model
+				// perspective rotation (look down at it)
+				gl.glRotatef(20f, 1f, -.1f, 0f);
+				gl.glRotatef(r, 0.0f, 1.0f, 0.0f); // Rotate The Scene On Y
 				gl.glScalef(.8f,.8f,.8f); // scale down
 				drawObject(gl,1.0f,bankVerts);
 				break;
 			case 6:
 				gl.glTranslatef(0f, -1.5f, -.5f); // center model
+				// perspective rotation (look down at it)
+				gl.glRotatef(20f, 1f, -.1f, 0f); 
+				gl.glRotatef(r, 0.0f, 1.0f, 0.0f); // Rotate The Scene On Y
 				drawObject(gl,1.0f,flatVerts);
 				break;
 			case 7:
-				// TODO: "Neighborhood"
+
+				// TODO: For composite scenes like this,
+				//		 the way we calc distance to camera is BROKEN
+				//		 Should work to fix
+
+				// Rotate the street and push it back in space
+				gl.glTranslatef(0f,0f,-20f);
+				// perspective rotation (look down at it)
+				gl.glRotatef(20f, 1f, -.1f, 0f); 
+				gl.glRotatef(r, 0f,1f,0f); // Spin around!
+				// Draw a big circle that is the "ground"
+				// We have to rotate it flat first
+				drawCircle(gl,0f,0f,0f,10f); // x y z r
+
+				// Draw buildings in a row
+				gl.glTranslatef(-8f,0f,-4f);
+				// bank
+				gl.glTranslatef(3.5f,0f,0f);
+				drawObject(gl,1.0f,bankVerts);
+				// Two flats
+				gl.glTranslatef(3.5f,0f,0f);
+				drawObject(gl,1.0f,flatVerts);
+				gl.glTranslatef(2.5f,0f,0f);
+				drawObject(gl,1.0f,flatVerts);
+				// Houses
+				gl.glTranslatef(2.0f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+				gl.glTranslatef(1.50f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+				gl.glTranslatef(1.50f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+				gl.glTranslatef(1.50f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+
+				// Neighborhood on other side
+				gl.glTranslatef(0f,0f,8f);
+				gl.glRotatef(180f,0f,1f,0f); // flip the houses round
+				gl.glTranslatef(3.5f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+				gl.glTranslatef(1.5f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+				gl.glTranslatef(1.5f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+				gl.glTranslatef(1.5f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+				gl.glTranslatef(1.5f,0f,0f);
+				drawObject(gl,1.0f,houseVerts);
+
 				break;
 			case 8:
 				// TODO: 8 objects in a cube
@@ -221,7 +278,7 @@ public final class View
 	    gl.glMatrixMode( GL2.GL_PROJECTION );
 	    gl.glLoadIdentity();
 		 
-	    glu.gluPerspective( 45.0f, h, 1.0, 20.0 );
+	    glu.gluPerspective( 45.0f, h, 1.0, 60.0 );
 	    gl.glMatrixMode( GL2.GL_MODELVIEW );
 	    gl.glLoadIdentity();
 	}
@@ -374,6 +431,8 @@ public final class View
 			//		Don't forget to call it from other drawObject methods!
 
 			// TODO Affix and choose angle of abberation effect
+
+			// TODO: Not a reliable way to get distance if you have done many translations - fix or leave?
 			
 			gl.glBegin(GL2.GL_POLYGON); 
 			for (int j = 0; j < obj[i].getSize(); ++j){
@@ -481,6 +540,20 @@ public final class View
 						  PYRAMID_4[i].getZ() + chromMagnitude * (-distance - PYRAMID_4[i].getZ()));
 		}
 
+		gl.glEnd();
+	}
+
+	// Draws a circle in the x-z plane with the specified center and radius
+	private void drawCircle(GL2 gl, float x, float y, float z, float r)
+	{
+		gl.glColor3f(.515f,.75f,.56f); // greenish
+		gl.glBegin(GL2.GL_POLYGON);
+		for (int i = 0; i < 32; ++i){
+			double a = i * 2.0 * Math.PI / 32;
+			float xi = x + r * (float)Math.sin(a);
+			float zi = z + r * (float)Math.cos(a);
+			gl.glVertex3f(xi,y,zi);
+		}
 		gl.glEnd();
 	}
 
