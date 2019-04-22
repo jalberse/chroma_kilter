@@ -32,6 +32,8 @@ public final class Model
 	private int currClearColor;
 	private String renderMode; // determines how we render the abberations
 
+	private boolean wireframe;
+
 	//**********************************************************************
 	// Constructors and Finalizer
 	//**********************************************************************
@@ -53,6 +55,7 @@ public final class Model
 		distance = -5.0f;
 		chromMagnitude = .1f;
 		renderMode = "nondestructive"; 
+		wireframe = true;
 
 		clearColor = CLEAR_COLORS[0];
 
@@ -64,6 +67,10 @@ public final class Model
 	//**********************************************************************
 	// Public Methods (Access Variables)
 	//**********************************************************************
+
+	public boolean isWireframe(){
+		return wireframe;
+	}
 
 	public String getRenderMode(){
 		return renderMode;
@@ -114,6 +121,10 @@ public final class Model
 	// Public Methods (Modify Variables)
 	//**********************************************************************
 	
+	public void setWireframe(boolean b){
+		wireframe = b;
+	}
+
 	public void setRenderMode(String s){
 		renderMode = s;
 	}

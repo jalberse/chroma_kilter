@@ -135,6 +135,11 @@ public final class KeyHandler extends KeyAdapter
 				// Do not check depth on chromAb
 				model.setRenderMode("nodepth");
 				break;
+			// Toggle wireframe
+			case KeyEvent.VK_W:
+				// Do not check depth on chromAb
+				model.setWireframe(!model.isWireframe());
+				break;
 		}
 	}
 }

@@ -329,7 +329,19 @@ public final class View
 			}
 			gl.glEnd();
 		}
-		
+		if (model.isWireframe()){
+			// draw a white wireframe
+			gl.glColor4f(0f,0f,0f,alpha);
+			for (int i = 0; i < obj.length; ++i){
+				gl.glBegin(GL2.GL_LINE_LOOP); 
+				for (int j = 0; j < obj[i].getSize(); ++j){
+					gl.glVertex3f(obj[i].get(j).getX(),
+									obj[i].get(j).getY(),
+									obj[i].get(j).getZ());
+				}
+				gl.glEnd();
+			}
+		}
 	}
 
 	/*
