@@ -15,7 +15,10 @@
 ## TODO
 
 - Enable user to toggle between colors for models
-- More geometries
-	- Sphere, dodeca, cone, teapot, monkey head (suzanne) ...
-- Multiple objects at once to observe interaction
-- Very minor stress testing
+- JOHN: Finish scene layouts
+  - Neighborhood
+  - 8 objects in a cube (like his class example)
+  - Objects in a line
+- JAMES: Control direction of chromab effect
+- JAMES: Functions for distance/chromab strength
+  - Let user toggle

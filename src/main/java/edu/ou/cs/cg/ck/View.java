@@ -133,11 +133,7 @@ public final class View
 		   
 		// All scenes are translated towards/away from camera like this
 	   	gl.glTranslatef( 0f, 0f, model.getDistance()); // translates back 5 units
-		
-		// TODO: Let user specify axis of rotation
 
-		// TODO: 8 objects in a cube scene
-		// TODO: Objects in a (rough) line to view overlaps scene
 		// Draw the scene
 		switch (model.getGeomID())
 		{
@@ -158,13 +154,26 @@ public final class View
 				drawObject(gl,1.0f,suzanneVerts);
 				break;
 			case 4:
+				gl.glTranslatef(0f, -1f, 0f); // center model
 				drawObject(gl,1.0f,houseVerts);
 				break;
 			case 5:
+				gl.glTranslatef(0f, -1f, 0f); // center model
+				gl.glScalef(.8f,.8f,.8f); // scale down
 				drawObject(gl,1.0f,bankVerts);
 				break;
 			case 6:
+				gl.glTranslatef(0f, -1.5f, -.5f); // center model
 				drawObject(gl,1.0f,flatVerts);
+				break;
+			case 7:
+				// TODO: "Neighborhood"
+				break;
+			case 8:
+				// TODO: 8 objects in a cube
+				break;
+			case 9:
+				// TODO: Objects in a line
 				break;
 		}
 
