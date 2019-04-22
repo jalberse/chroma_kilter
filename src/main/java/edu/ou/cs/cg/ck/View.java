@@ -129,10 +129,12 @@ public final class View
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_STENCIL_BUFFER_BIT);
 		   
 		// Transform the whole scene
-	   	gl.glLoadIdentity();
+		   gl.glLoadIdentity();
+		   
+		// All scenes are translated towards/away from camera like this
 	   	gl.glTranslatef( 0f, 0f, model.getDistance()); // translates back 5 units
+		
 		// TODO: Let user specify axis of rotation
-		gl.glRotatef(r, 1.0f, 1.0f, 1.0f); // Rotate The Scene On X, Y & Z
 
 		// TODO: 8 objects in a cube scene
 		// TODO: Objects in a (rough) line to view overlaps scene
@@ -140,12 +142,15 @@ public final class View
 		switch (model.getGeomID())
 		{
 			case 0:
+				gl.glRotatef(r, 1.0f, 1.0f, 1.0f); // Rotate The Scene On X, Y & Z
 				drawObject(gl,1.0f,CUBE_GEOMETRY);
 				break;
 			case 1:
+				gl.glRotatef(r, 1.0f, 1.0f, 1.0f); // Rotate The Scene On X, Y & Z
 				drawObject(gl, 1.0f,PYRAMID_4);
 				break;
 			case 2:
+				gl.glRotatef(r, 0f, 0f, 1.0f); // Rotate The Scene On X, Y & Z
 				drawObject(gl,1.0f,teapotVerts);
 				break;
 			case 3:
