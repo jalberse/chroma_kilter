@@ -72,8 +72,7 @@ public final class View
 		teapotVerts = new Point3D[5184 / 3];
 		readInTeapot(); // places verts into array from file
 
-		suzanneVerts = new Point3D[511];
-		readInSuzanne(); 
+		suzanneVerts = loadObj("resources/suzanne.obj");
 
 		// Initialize animation
 		animator = new FPSAnimator(canvas, DEFAULT_FRAMES_PER_SECOND);
@@ -501,23 +500,31 @@ public final class View
 		}
 	}
 
-	private void readInSuzanne(){
-		// TODO
-		/*
-			Make this function work for .obj files! We want to read in arbitrary .obj
-		*/
-		int j = 0;
-		InputStream in = this.getClass().getResourceAsStream("resources/suzanne");
+	private Point3D[] loadObj(String filename)
+	{
+		InputStream in  = this.getClass().getResourceAsStream(filename);
+		Vector<Point3D> vertices = new Vector<Point3D>(); // vertex table
+		Vector<Point3D> object = new Vector<Point3D>(); // Vertices in order we draw tris
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(in))){
 			String line;
 			while ((line = br.readLine()) != null){
-				String[] verts = line.split(" ");
-				float[] vert_f = new float[4];
-				for (int i = 0; i < verts.length; ++i){
-					vert_f[i] = Float.parseFloat(verts[i]);
+				String[] tokens = line.split(" ");
+				if (tokens[0].equals("v")){
+					// Line represents a vertex - add to the list
+					float x = Float.parseFloat(tokens[1]);
+					float y = Float.parseFloat(tokens[2]);
+					float z = Float.parseFloat(tokens[3]);
+					vertices.add(new Point3D(x,y,z));
 				}
-				suzanneVerts[j] = new Point3D(vert_f[0],vert_f[1],vert_f[2]);
-				j++;
+				if (tokens[0].equals("f")){
+					Point3D v0 = vertices.get(Integer.parseInt(tokens[1].split("/")[0]) - 1);
+					Point3D v1 = vertices.get(Integer.parseInt(tokens[2].split("/")[0]) - 1);
+					Point3D v2 = vertices.get(Integer.parseInt(tokens[3].split("/")[0]) - 1);
+					object.add(v0);
+					object.add(v1);
+					object.add(v2);
+					System.out.println(1 + Integer.parseInt(tokens[1].split("/")[0]));
+				}
 			}
 		}
 		catch (FileNotFoundException e){
@@ -526,5 +533,10 @@ public final class View
 		catch (IOException e){
 			e.printStackTrace();
 		}
+
+		Object[] a = object.toArray();
+		Point3D[] o = Arrays.copyOf(a,a.length,Point3D[].class); 
+
+		return o;
 	}
 }
