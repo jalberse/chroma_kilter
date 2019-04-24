@@ -297,7 +297,6 @@ public final class View
 				gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
 
 				// Write 1's into stencil buffer to make a "hole" on base object
-				gl.glDepthMask(false);
 				gl.glStencilFunc(GL.GL_ALWAYS,1,~0);
 				gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_REPLACE);
 				break;
@@ -311,7 +310,6 @@ public final class View
 		{
 			case "nondestructive":
 				// Only draw where base object isn't
-				gl.glDepthMask(true);
 				gl.glStencilFunc(GL.GL_NOTEQUAL,1,~0);
 				gl.glStencilOp(GL.GL_KEEP,GL.GL_KEEP,GL.GL_KEEP);
 				break;
