@@ -100,6 +100,7 @@ public final class KeyHandler extends KeyAdapter
 			case KeyEvent.VK_7:
 				model.setGeomID(7);
 				break;
+
 			// Increase/decrease strength of chromatic effect
 			case KeyEvent.VK_UP:
 				model.setChromMagnitude(model.getChromMagnitude() + .01f);
@@ -107,11 +108,28 @@ public final class KeyHandler extends KeyAdapter
 			case KeyEvent.VK_DOWN:
 				model.setChromMagnitude(model.getChromMagnitude() - .01f);
 				break;
-			// Set clear color (background color)
+				
+			// Rotate axis of aberration
 			case KeyEvent.VK_LEFT:
-				model.setClearColorPrevious();
+				model.setChromAngle(model.getChromAngle() + 0.1f);
 				break;
 			case KeyEvent.VK_RIGHT:
+				model.setChromAngle(model.getChromAngle() - 0.1f);
+				break;
+				
+			// Change distance of focal plane from the screen.
+			case KeyEvent.VK_SLASH:
+				model.setZFocalPlane(model.getZFocalPlane() + 0.1f);
+				break;
+			case KeyEvent.VK_PERIOD:
+				model.setZFocalPlane(model.getZFocalPlane() - 0.1f);
+				break;
+				
+			// Set clear color (background color)
+			case KeyEvent.VK_MINUS:
+				model.setClearColorPrevious();
+				break;
+			case KeyEvent.VK_EQUALS:
 				model.setClearColorNext();
 				break;
 			// Toggle render modes
