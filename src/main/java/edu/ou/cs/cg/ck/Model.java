@@ -27,10 +27,12 @@ public final class Model
 		// 0 - cube
 		// 1 - square pyramid
 		// ... TODO add more
-	private float chromMagnitude; // the strength (translation) of chromatic abberation effect
+	private float chromMagnitude; // the strength (translation) of chromatic aberration effect
+	private float chromAngle; // angle of the aberration axis relative to horizontal screen axis
+	private float zFocalPlane;  // distance from screen where the aberration vanishes
 	private float[] clearColor; 
 	private int currClearColor;
-	private String renderMode; // determines how we render the abberations
+	private String renderMode; // determines how we render the aberrations
 
 	private boolean wireframe;
 
@@ -53,7 +55,9 @@ public final class Model
 		rotationSpeed = .15f;
 		isRotating = true;
 		distance = -5.0f;
-		chromMagnitude = .1f;
+		chromMagnitude = 0.1f;
+		chromAngle = 0f;
+		zFocalPlane = 0f;
 		renderMode = "nondestructive"; 
 		wireframe = true;
 
@@ -82,6 +86,14 @@ public final class Model
 
 	public float getChromMagnitude(){
 		return chromMagnitude;
+	}
+	
+	public float getChromAngle(){
+		return chromAngle;
+	}
+	
+	public float getZFocalPlane(){
+		return zFocalPlane;
 	}
 
 	public int getGeomID(){
@@ -151,6 +163,14 @@ public final class Model
 
 	public void setChromMagnitude(float x){
 		chromMagnitude = x;
+	}
+	
+	public void setChromAngle(float x){
+		chromAngle = x;
+	}
+	
+	public void setZFocalPlane(float x){
+		zFocalPlane = x;
 	}
 
 	public void setGeomID(int x){

@@ -23,4 +23,9 @@ public final class Face
     {
         return verts.size();
     }
+    
+    public Point3D[] toArray() {
+    	Point3D[] array = new Point3D[verts.size()];
+    	return verts.toArray(array);
+    }
 }
