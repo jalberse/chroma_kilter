@@ -294,6 +294,14 @@ public final class Model
 		{1f,0f,0f}, // red
 		{1f,1f,0f} // yellow
 	};
+
+	public static final float[][] OBJECT_COLORS = {
+		{1f,0.59f,0.518f}, // salmonish
+		{0.937f, 0.811f, 0.482f}, // goldish
+		{0.980f, 0.521f, 0.894f}, // hot pink
+		{0.329f, 0.909f, 0.901f}, // sky blue
+		{0.486f, 0.972f, 0.541f}, // greenish
+	};
 }
 
 //******************************************************************************
