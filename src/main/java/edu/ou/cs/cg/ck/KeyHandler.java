@@ -136,10 +136,18 @@ public final class KeyHandler extends KeyAdapter
 				
 			// Set clear color (background color)
 			case KeyEvent.VK_MINUS:
-				model.setClearColorPrevious();
+				if (b)
+				{
+					model.setObjectColorPrevious();
+				}
+				else model.setClearColorPrevious();
 				break;
 			case KeyEvent.VK_EQUALS:
-				model.setClearColorNext();
+				if (b)
+				{
+					model.setObjectColorNext();
+				}
+				else model.setClearColorNext();
 				break;
 			// Toggle render modes
 			case KeyEvent.VK_Z:

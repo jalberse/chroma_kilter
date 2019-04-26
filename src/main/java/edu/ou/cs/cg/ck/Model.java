@@ -31,7 +31,9 @@ public final class Model
 	private float chromAngle; // angle of the aberration axis relative to horizontal screen axis
 	private float zFocalPlane;  // distance from screen where the aberration vanishes
 	private float[] clearColor; 
+	private float[] objectColor; // color of object
 	private int currClearColor;
+	private int currObjectColor;
 	private String renderMode; // determines how we render the aberrations
 
 	private boolean wireframe;
@@ -65,6 +67,9 @@ public final class Model
 		chromAlpha = .3f;
 
 		clearColor = CLEAR_COLORS[0];
+		currClearColor = 0;
+		objectColor = OBJECT_COLORS[0];
+		currObjectColor = 0;
 
 		geomID = 0;
 
@@ -137,10 +142,23 @@ public final class Model
 		return chromAlpha;
 	}
 
+	public float[] getObjectColor()
+	{
+		return objectColor;
+	}
+
 	//**********************************************************************
 	// Public Methods (Modify Variables)
 	//**********************************************************************
 	
+	public void setObjectColor(int i)
+	{
+		if (i >= 0 && i < OBJECT_COLORS.length)
+		{
+			objectColor = OBJECT_COLORS[i];
+		}
+	}
+
 	public void setChromAlpha(float a)
 	{
 		if (a >= 0)
@@ -170,6 +188,22 @@ public final class Model
 			clearColor = CLEAR_COLORS[currClearColor];
 		}
 	}
+
+	//
+	public void setObjectColorPrevious(){
+		if (currObjectColor > 0){
+			currObjectColor--;
+			objectColor = OBJECT_COLORS[currObjectColor];
+		}
+	}
+
+	public void setObjectColorNext(){
+		if (currObjectColor < OBJECT_COLORS.length - 1){
+			currObjectColor++;
+			objectColor = OBJECT_COLORS[currObjectColor];
+		}
+	}
+	//
 
 	public void setClearColor (float r, float g, float b){
 		clearColor[0] = r;

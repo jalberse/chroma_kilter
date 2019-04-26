@@ -13,6 +13,7 @@
 | left, right | rotate aberration axis (counterclockwise, clockwise) |
 | period, slash | change distance of focal plane from screen |
 | minus, equals | toggle background color |
+| shift + minus, shift + equals | Change object color |
 
 ## TODO
 

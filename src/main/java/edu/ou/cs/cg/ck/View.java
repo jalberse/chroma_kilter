@@ -395,8 +395,8 @@ public final class View
 		TODO draw wireframe too since we don't have shading
 	*/
 	private void drawBaseObject(GL2 gl, float alpha, Face[] obj){
-		
-		gl.glColor4f( 1f,0.59f,0.518f,alpha ); // pinkish - TODO let user toggle
+		float[] col = model.getObjectColor();
+		gl.glColor4f( col[0],col[1],col[2],alpha );
 		for (int i = 0; i < obj.length; ++i){
 			gl.glBegin(GL2.GL_POLYGON); 
 			for (int j = 0; j < obj[i].getSize(); ++j){
