@@ -427,18 +427,16 @@ public final class View
 	private void drawObjectAbTri(GL2 gl, float alpha, Face[] obj){
 		
 		float[][] aberrationVectors = getAberrationUnitVectors(gl);
+		float magnitude = model.getChromMagnitude();
 
 		gl.glColor4f( 0f,0f,1f,a ); // blue color with user defined alpha
 		for (int i = 0; i < obj.length; ++i){
 			
-			float[] chromMagnitudes = getVertexChromMagnitudes(gl, obj[i]);
-			//System.out.println(Arrays.toString(chromMagnitudes));
-			
 			gl.glBegin(GL2.GL_POLYGON); 
 			for (int j = 0; j < obj[i].getSize(); ++j){
-				gl.glVertex3f(obj[i].get(j).getX() + chromMagnitudes[j] * aberrationVectors[0][0],
-							  obj[i].get(j).getY() + chromMagnitudes[j] * aberrationVectors[0][1],
-							  obj[i].get(j).getZ() + chromMagnitudes[j] * aberrationVectors[0][2]);
+				gl.glVertex3f(obj[i].get(j).getX() + magnitude * aberrationVectors[0][0],
+							  obj[i].get(j).getY() + magnitude * aberrationVectors[0][1],
+							  obj[i].get(j).getZ() + magnitude * aberrationVectors[0][2]);
 			}
 			
 			gl.glEnd();
@@ -447,13 +445,11 @@ public final class View
 		gl.glColor4f( 1f,0f,0f,a); // red color
 		for (int i = 0; i < obj.length; ++i){
 			
-			float[] chromMagnitudes = getVertexChromMagnitudes(gl, obj[i]);
-			
 			gl.glBegin(GL2.GL_POLYGON); 
 			for (int j = 0; j < obj[i].getSize(); ++j){
-				gl.glVertex3f(obj[i].get(j).getX() + chromMagnitudes[j] * aberrationVectors[1][0],
-							  obj[i].get(j).getY() + chromMagnitudes[j] * aberrationVectors[1][1],
-							  obj[i].get(j).getZ() + chromMagnitudes[j] * aberrationVectors[1][2]);
+				gl.glVertex3f(obj[i].get(j).getX() + magnitude * aberrationVectors[1][0],
+							  obj[i].get(j).getY() + magnitude * aberrationVectors[1][1],
+							  obj[i].get(j).getZ() + magnitude * aberrationVectors[1][2]);
 			}
 			
 			gl.glEnd();
@@ -517,51 +513,6 @@ public final class View
 		return aberrationVecs;
 	}
 	
-	/**
-	 * Return a list of chroma magnitudes for each vertex in a given array of points. The chroma 
-	 * magnitudes must be calculated outside of any glBegin call in order for gluProject to 
-	 * calculate the correct distance of each vertex from the screen.
-	 * @param gl
-	 * @param vertices
-	 * @return
-	 */
-	private float[] getVertexChromMagnitudes(GL2 gl, Point3D[] vertices) {
-		
-		// Get the modelview matrix, projection matrix, and viewport.
-		float[] modelview = new float[16];
-		float[] projection = new float[16];
-		int[] viewport = new int[4];
-		gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelview, 0);
-		gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projection, 0);
-		gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
-		
-		// Construct an array to hold the chroma magnitude for each vertex.
-		float[] chromMags = new float[vertices.length];
-		
-		// Calculate the magnitude of the aberration for every vertex.
-		float[] screenPt = new float[3];  // array to store the screen point
-		float magnitude = model.getChromMagnitude();
-		float zFocalPlane = model.getZFocalPlane();
-		for (int idx = 0; idx < chromMags.length; ++idx) {
-			
-			// Get the vertex in screen coordinates.
-			glu.gluProject(vertices[idx].getX(), vertices[idx].getY(), vertices[idx].getZ(), 
-					modelview, 0, projection, 0, viewport, 0, screenPt, 0);
-			
-			// Extract the distance from the screen.
-			float screenDistance = screenPt[2];
-			
-			// Calculate the chroma magnitude.
-			chromMags[idx] = magnitude * (zFocalPlane - screenDistance);
-		}
-		
-		return chromMags;
-	}
-	
-	private float[] getVertexChromMagnitudes(GL2 gl, Face obj) {
-		return getVertexChromMagnitudes(gl, obj.toArray());
-	}
-	
 	// ****************
 	// Special drawing methods for primitives, which have some exceptions
 	// (Quads, colors) that means we can't lump them with complicated geometries
@@ -588,26 +539,24 @@ public final class View
 	private void drawCubeAb(GL2 gl, float alpha){
 
 		float[][] aberrationVectors = getAberrationUnitVectors(gl);
-		float[] chromMagnitudes = getVertexChromMagnitudes(gl, CUBE_GEOMETRY);
-		//System.out.println(Arrays.toString(chromMagnitudes));
+		float magnitude = model.getChromMagnitude();
 		
 		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube
 		
 		gl.glColor4f( 0f,0f,1f,a  ); // blue color
 		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
 			// Draw the vertex
-			gl.glVertex3f(CUBE_GEOMETRY[i].getX() + chromMagnitudes[i] * aberrationVectors[0][0],
-						  CUBE_GEOMETRY[i].getY() + chromMagnitudes[i] * aberrationVectors[0][1],
-						  CUBE_GEOMETRY[i].getZ() + chromMagnitudes[i] * aberrationVectors[0][2]);
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX() + magnitude * aberrationVectors[0][0],
+						  CUBE_GEOMETRY[i].getY() + magnitude * aberrationVectors[0][1],
+						  CUBE_GEOMETRY[i].getZ() + magnitude * aberrationVectors[0][2]);
 		}
 		
 		gl.glColor4f( 1f,0f,0f,a); // red color
 		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
-			//float magnitude = getChromMagnitude(gl, CUBE_GEOMETRY[i]);
 			// Draw the vertex
-			gl.glVertex3f(CUBE_GEOMETRY[i].getX() + chromMagnitudes[i] * aberrationVectors[1][0],
-						  CUBE_GEOMETRY[i].getY() + chromMagnitudes[i] * aberrationVectors[1][1],
-						  CUBE_GEOMETRY[i].getZ() + chromMagnitudes[i] * aberrationVectors[1][2]);
+			gl.glVertex3f(CUBE_GEOMETRY[i].getX() + magnitude * aberrationVectors[1][0],
+						  CUBE_GEOMETRY[i].getY() + magnitude * aberrationVectors[1][1],
+						  CUBE_GEOMETRY[i].getZ() + magnitude * aberrationVectors[1][2]);
 		}
 
 		gl.glEnd(); // Done Drawing The Quad
@@ -632,22 +581,22 @@ public final class View
 	private void drawSquarePyramidAb(GL2 gl, float alpha){
 		
 		float[][] aberrationVectors = getAberrationUnitVectors(gl);
-		float[] chromMagnitudes = getVertexChromMagnitudes(gl, PYRAMID_4);
+		float magnitude = model.getChromMagnitude();
 
 		gl.glBegin(GL2.GL_TRIANGLES);
 
 		gl.glColor4f( 0f,0f,1f,a  ); // blue color
 		for (int i = 0; i < PYRAMID_4.length; ++i){
-			gl.glVertex3f(PYRAMID_4[i].getX() + chromMagnitudes[i] * aberrationVectors[0][0],
-						  PYRAMID_4[i].getY() + chromMagnitudes[i] * aberrationVectors[0][1],
-						  PYRAMID_4[i].getZ() + chromMagnitudes[i] * aberrationVectors[0][2]);
+			gl.glVertex3f(PYRAMID_4[i].getX() + magnitude * aberrationVectors[0][0],
+						  PYRAMID_4[i].getY() + magnitude * aberrationVectors[0][1],
+						  PYRAMID_4[i].getZ() + magnitude * aberrationVectors[0][2]);
 		}
 
 		gl.glColor4f( 1f,0f,0f,a); // red color
 		for (int i = 0; i < PYRAMID_4.length; ++i){
-			gl.glVertex3f(PYRAMID_4[i].getX() + chromMagnitudes[i] * aberrationVectors[1][0],
-						  PYRAMID_4[i].getY() + chromMagnitudes[i] * aberrationVectors[1][1],
-						  PYRAMID_4[i].getZ() + chromMagnitudes[i] * aberrationVectors[1][2]);
+			gl.glVertex3f(PYRAMID_4[i].getX() + magnitude * aberrationVectors[1][0],
+						  PYRAMID_4[i].getY() + magnitude * aberrationVectors[1][1],
+						  PYRAMID_4[i].getZ() + magnitude * aberrationVectors[1][2]);
 		}
 
 		gl.glEnd();
