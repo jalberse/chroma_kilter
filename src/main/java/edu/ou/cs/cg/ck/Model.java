@@ -36,6 +36,8 @@ public final class Model
 
 	private boolean wireframe;
 
+	private float chromAlpha;
+
 	//**********************************************************************
 	// Constructors and Finalizer
 	//**********************************************************************
@@ -60,6 +62,7 @@ public final class Model
 		zFocalPlane = 0f;
 		renderMode = "nondestructive"; 
 		wireframe = true;
+		chromAlpha = .3f;
 
 		clearColor = CLEAR_COLORS[0];
 
@@ -129,10 +132,23 @@ public final class Model
 			return new Point2D.Double(cursor.x, cursor.y);
 	}
 
+	public float getChromAlpha()
+	{
+		return chromAlpha;
+	}
+
 	//**********************************************************************
 	// Public Methods (Modify Variables)
 	//**********************************************************************
 	
+	public void setChromAlpha(float a)
+	{
+		if (a >= 0)
+		{
+			chromAlpha = a;
+		}
+	}
+
 	public void setWireframe(boolean b){
 		wireframe = b;
 	}

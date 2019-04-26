@@ -8,7 +8,8 @@
 | 0-7 | Change scene |
 | z,x,c | Toggle render modes (nondestructive, basic, nodepth) |
 | w | Toggle wireframe |
-| up, down | change strength of chromatic aberration (increase, decrease) |
+| up, down | Increase/Decrease the displacement of the chromatic aberration |
+| shift + up, shift + down | Increase/Decrease the transparency of the aberrations |
 | left, right | rotate aberration axis (counterclockwise, clockwise) |
 | period, slash | change distance of focal plane from screen |
 | minus, equals | toggle background color |

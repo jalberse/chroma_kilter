@@ -43,7 +43,8 @@ public final class KeyHandler extends KeyAdapter
 
 	public void		keyPressed(KeyEvent e)
 	{
-		double			a = (Utilities.isShiftDown(e) ? 0.01 : 0.1);
+		boolean	b = Utilities.isShiftDown(e);
+
 		switch (e.getKeyCode())
 		{
 			// pause rotation
@@ -103,10 +104,18 @@ public final class KeyHandler extends KeyAdapter
 
 			// Increase/decrease strength of chromatic effect
 			case KeyEvent.VK_UP:
-				model.setChromMagnitude(model.getChromMagnitude() + .01f);
+				if (b)
+				{
+					model.setChromAlpha(model.getChromAlpha() + 0.02f);
+				}
+				else model.setChromMagnitude(model.getChromMagnitude() + .01f);
 				break;
 			case KeyEvent.VK_DOWN:
-				model.setChromMagnitude(model.getChromMagnitude() - .01f);
+				if (b)
+				{
+					model.setChromAlpha(model.getChromAlpha() - 0.02f);
+				}
+				else model.setChromMagnitude(model.getChromMagnitude() - .01f);
 				break;
 				
 			// Rotate axis of aberration

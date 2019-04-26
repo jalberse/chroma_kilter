@@ -44,6 +44,7 @@ public final class View
 	private final MouseHandler			mouseHandler;
 	
 	private float r;
+	private float a; // chromab alpha
 
 	private Face[] teapotVerts;
 	private Face[] suzanneVerts;
@@ -60,6 +61,7 @@ public final class View
 		this.canvas = canvas;
 
 		r = 0.0f;
+		
 
 		// Initialize rendering
 		k = 0;
@@ -67,6 +69,8 @@ public final class View
 
 		// Initialize model (scene data and parameter manager)
 		model = new Model(this);
+
+		a = model.getChromAlpha();
 
 		// Initialize controller (interaction handlers)
 		keyHandler = new KeyHandler(this, model);
@@ -110,6 +114,8 @@ public final class View
 		if (model.isRotating()){
 			r -= model.getRotationSpeed(); // change rotation angle iff spinning enabled
 		}
+
+		a = model.getChromAlpha();
 	}
 
 	// *************************
@@ -334,6 +340,7 @@ public final class View
 		}
 	}
 
+	// Draw primitives (from Point3D arrays)
 	private void drawObject(GL2 gl, float alpha, Point3D[] obj)
 	{
 		prepareEffect(gl);
@@ -421,7 +428,7 @@ public final class View
 		
 		float[][] aberrationVectors = getAberrationUnitVectors(gl);
 
-		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
+		gl.glColor4f( 0f,0f,1f,a ); // blue color with user defined alpha
 		for (int i = 0; i < obj.length; ++i){
 			
 			float[] chromMagnitudes = getVertexChromMagnitudes(gl, obj[i]);
@@ -437,7 +444,7 @@ public final class View
 			gl.glEnd();
 		}
 		
-		gl.glColor4f( 1f,0f,0f,.3f); // red color
+		gl.glColor4f( 1f,0f,0f,a); // red color
 		for (int i = 0; i < obj.length; ++i){
 			
 			float[] chromMagnitudes = getVertexChromMagnitudes(gl, obj[i]);
@@ -586,7 +593,7 @@ public final class View
 		
 		gl.glBegin(GL2.GL_QUADS); // Start Drawing The Cube
 		
-		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
+		gl.glColor4f( 0f,0f,1f,a  ); // blue color
 		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
 			// Draw the vertex
 			gl.glVertex3f(CUBE_GEOMETRY[i].getX() + chromMagnitudes[i] * aberrationVectors[0][0],
@@ -594,7 +601,7 @@ public final class View
 						  CUBE_GEOMETRY[i].getZ() + chromMagnitudes[i] * aberrationVectors[0][2]);
 		}
 		
-		gl.glColor4f( 1f,0f,0f,.3f); // red color
+		gl.glColor4f( 1f,0f,0f,a); // red color
 		for (int i = 0; i < CUBE_GEOMETRY.length; ++i){
 			//float magnitude = getChromMagnitude(gl, CUBE_GEOMETRY[i]);
 			// Draw the vertex
@@ -629,14 +636,14 @@ public final class View
 
 		gl.glBegin(GL2.GL_TRIANGLES);
 
-		gl.glColor4f( 0f,0f,1f,.3f  ); // blue color
+		gl.glColor4f( 0f,0f,1f,a  ); // blue color
 		for (int i = 0; i < PYRAMID_4.length; ++i){
 			gl.glVertex3f(PYRAMID_4[i].getX() + chromMagnitudes[i] * aberrationVectors[0][0],
 						  PYRAMID_4[i].getY() + chromMagnitudes[i] * aberrationVectors[0][1],
 						  PYRAMID_4[i].getZ() + chromMagnitudes[i] * aberrationVectors[0][2]);
 		}
 
-		gl.glColor4f( 1f,0f,0f,.3f); // red color
+		gl.glColor4f( 1f,0f,0f,a); // red color
 		for (int i = 0; i < PYRAMID_4.length; ++i){
 			gl.glVertex3f(PYRAMID_4[i].getX() + chromMagnitudes[i] * aberrationVectors[1][0],
 						  PYRAMID_4[i].getY() + chromMagnitudes[i] * aberrationVectors[1][1],
