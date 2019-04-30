@@ -4,13 +4,14 @@
 
 The use of chromatic aberration in animation was recently explored by the critically acclaimed film *Spider-Man: Into the Spider-Verse*. In the film, the effect is used with great success as a surrogate for depth-of-field and a way to place 3D rendered scenes in the visual language of 2D comic books. Inspired by the film’s success, Chroma Kilter is an environment to explore the aesthetic uses of chromatic aberration in rendered scenes.
 
-![An example of chromatic aberration as a substitute for traditional depth-of-field effects](./screenshots/spider_verse_02.png)
+![Chromatic aberration applied to Spider-Gwen](./screenshots/spider_verse_01.png)
 
-An example of chromatic aberration as a substitute for traditional depth-of-field effects
+An example of chromatic aberration applied to Spider-Gwen
 
-![An example of the chromatic aberration being applied to Spider-Gwen](./screenshots/spider_verse_01.png)
+![Hey... chromatic aberration](./screenshots/hey.jpg)
 
-An example of the chromatic aberration being applied to Spider-Gwen
+Hey.. An example of the chromatic aberration as depth-of-field
+
 
 ## Render modes
 
