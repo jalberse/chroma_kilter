@@ -13,6 +13,10 @@ An example of chromatic aberration applied to Spider-Gwen
 Hey.. An example of the chromatic aberration as depth-of-field
 
 
+## Features
+
+Environment for viewing various models/scenes with chromatic aberration effects applied. Modify chromatic aberration magnitude, transparency, and mode (one of three render modes). Chromatic aberrations operate on the plane parellel to the plane of the camera. 
+
 ## Render modes
 
 ### Non-destructive
