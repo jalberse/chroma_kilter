@@ -8,10 +8,7 @@ import edu.ou.cs.cg.utilities.Utilities;
 //******************************************************************************
 
 /**
- * The <CODE>KeyHandler</CODE> class.<P>
- * 
- * @author  Chris Weaver
- * @version %I%, %G%
+ * Modified from Chris Weaver
  */
 public final class KeyHandler extends KeyAdapter
 {
