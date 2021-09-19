@@ -10,7 +10,7 @@ An example of chromatic aberration applied to Spider-Gwen
 
 ![Hey... chromatic aberration](./screenshots/hey.jpg)
 
-Hey.. An example of the chromatic aberration as depth-of-field
+An example of the chromatic aberration as depth-of-field
 
 
 ## Features
